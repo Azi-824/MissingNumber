@@ -4,7 +4,12 @@
 //########## ヘッダーファイル読み込み ##########
 #include "DxLib.h"
 #include "main.hpp"
+#include "FPS.hpp"
 #include <direct.h>
+
+//*********** グローバルオブジェクト ***********
+FPS *fps = new FPS(GAME_FPS_SPEED);
+
 
 //########## マクロ定義 ##########
 #define EASY_IMAGE		"LEVELIMAGE\\easy.png"		//難易度簡単の画像
@@ -283,10 +288,6 @@ int SaveMinNum = 0;		//セーブデータの中の最小値
 //########## プロトタイプ宣言 ##########
 //LRESULT CALLBACK MY_WNDPROC(HWND, UINT, WPARAM, LPARAM);	//自作ウィンドウプロシージャ
 
-VOID MY_FPS_UPDATE(VOID);			//FPS値を計測、更新する関数
-VOID MY_FPS_DRAW(VOID);				//FPS値を描画する関数
-VOID MY_FPS_WAIT(VOID);				//FPS値を計測し、待つ関数
-
 VOID MY_ALL_KEYDOWN_UPDATE(VOID);	//キーの入力状態を更新する関数
 
 VOID MY_GAME_TITLE(VOID);			//タイトル画面の関数
@@ -297,7 +298,6 @@ VOID MY_GAME_SET(VOID);				//設定画面の関数
 VOID MY_GAME_PLAY(VOID);			//プレイ画面の関数
 VOID MY_GAME_RESULT(VOID);			//リザルト画面の関数
 VOID MY_GAME_RANKING(VOID);			//ランキング画面の関数
-//VOID MY_GAME_END(VOID);				//エンド画面の関数
 
 VOID MY_DRAW_STRING_CENTER_CENTER(char[][128], int, char *, int);	//画面中央に文字を描画する関数
 VOID MY_DRAW_SET_DEFAULT_FONT(BOOL);								//文字をデフォルトフォントに設定する関数
@@ -365,9 +365,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetWindowStyleMode(SET_WINDOW_ST_MODE_DEFAULT);			//タイトルバーあり
 
 	SetMainWindowText(TEXT(GAME_WINDOW_NAME));					//タイトルの文字
-
-	//フック→WM_CLOSEなどのメッセージを引っ掛けて取得する
-	//SetHookWinProc(MY_WNDPROC);	//ウィンドウプロシージャの設定
 
 	SetWindowIconID(333);	//ウインドウのアイコン変更
 
@@ -449,6 +446,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		//STATE_DRAW();							//情報の描画
 
+		fps->Update();		//FPSの処理[更新]
+
 		//シーン選択
 		switch (GameSceneNow)
 		{
@@ -500,25 +499,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			break;	//ランキング画面の処理ここまで
 
-		//case (int)GAME_SCENE_END:	//エンド画面の処理ここから
-
-		//	//MY_GAME_END();		//エンド画面の処理
-
-		//	break;	//エンド画面の処理ここまで
-
 		default:
 
 			break;
 
 		}
 
-		MY_FPS_UPDATE();	//FPSの処理[更新]
+		ScreenFlip();					//モニタのリフレッシュレートの速さで裏画面を再描画
 
-		//MY_FPS_DRAW();		//FPSの処理[描画]
-
-		ScreenFlip();		//モニタのリフレッシュレートの速さで裏画面を再描画
-
-		MY_FPS_WAIT();		//FPSの処理[待つ]
+		fps->Wait();					//FPSの処理(待つ)
 	}
 
 	//▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ 画像のハンドルの削除 ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
@@ -575,50 +564,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	DeleteMusicMem(SE_COUNTDOWN.Handle);//音のハンドルを削除
 	//▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ 音のハンドルの削除 ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
 
+	delete fps;				//fpsを破棄
+
 	DxLib_End();		//ＤＸライブラリ使用の終了処理
 
 	return 0;
 }
 
-//########## FPS値を計測、更新する関数 ##########
-VOID MY_FPS_UPDATE(VOID)
-{
-	if (CountFps == 0) //1フレーム目なら時刻を記憶
-	{
-		StartTimeFps = GetNowCount();
-	}
-
-	if (CountFps == SampleNumFps) //60フレーム目なら平均を計算
-	{
-		int now = GetNowCount();
-		CalcFps = 1000.f / ((now - StartTimeFps) / (float)SampleNumFps);
-		CountFps = 0;
-		StartTimeFps = now;
-	}
-	CountFps++;
-	return;
-}
-
-//########## FPS値を描画する関数 ##########
-VOID MY_FPS_DRAW(VOID)
-{
-	//文字列を描画
-	DrawFormatString(0, GAME_HEIGHT - 20, GetColor(255, 255, 255), "FPS:%.1f", CalcFps);
-	return;
-}
-
-//########## FPS値を計測し、待つ関数 ##########
-VOID MY_FPS_WAIT(VOID)
-{
-	int resultTime = GetNowCount() - StartTimeFps;					//かかった時間
-	int waitTime = CountFps * 1000 / GAME_FPS_SPEED - resultTime;	//待つべき時間
-
-	if (waitTime > 0)		//指定のFPS値よりも早い場合
-	{
-		Sleep(waitTime);	//待つ
-	}
-	return;
-}
 
 //########## キーの入力状態を更新する関数 ##########
 VOID MY_ALL_KEYDOWN_UPDATE(VOID)
@@ -1176,97 +1128,6 @@ VOID MY_GAME_RANKING(VOID)
 	}
 
 }
-
-//########## エンド画面の関数 ##########
-
-//VOID MY_GAME_END(VOID)
-//{	
-//	BackImageNow = BACKIMAGE_END;	//背景画像の種類をエンド画面に変更
-//
-//	DRAW_BACKIMAGE(&Back_Image[BackImageNow]);	//背景の描画
-//
-//	//▼▼▼▼▼▼▼▼▼▼ タイトルの描画 ▼▼▼▼▼▼▼▼▼▼
-//	char StrGameTitle[1][128] = { "ゲームを終了します" };
-//	char StrFontTitle[128] = { "MS ゴシック" };	//大文字半角「MS」、半角「空白」、全角「ゴシック」
-//
-//	MY_DRAW_STRING_CENTER_CENTER(&StrGameTitle[0], 1, StrFontTitle, 64);		//画面中央に描画
-//	//▲▲▲▲▲▲▲▲▲▲ タイトルの描画 ▲▲▲▲▲▲▲▲▲▲
-//
-//	if (WaitTime_flg == FALSE)
-//	{
-//		WaitTime_flg = TRUE;		//時間を待つためのフラグを立てる
-//		StartTime = GetNowCount();	//計測開始
-//	}
-//
-//	//▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ 2秒たったら、自動的にゲーム終了する処理 ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-//	if (WaitTime_flg == TRUE)
-//	{
-//		LimitTime = 2;		//カウントダウンの時間を設定
-//		NokoriTime = (LimitTime - (GetNowCount() - StartTime) / 1000);	//残り時間の更新
-//
-//		DRAW_WAIT_TIME(NokoriTime);	//時間の描画
-//
-//		//2秒たったら、ゲーム終了
-//		if (NokoriTime <= 0)
-//		{
-//			GameEnd_flg = TRUE;		//ゲーム終了フラグ
-//			WaitTime_flg = FALSE;	//時間設定フラグをリセット
-//		}
-//	}
-//	//▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ 2秒たったら、自動的にゲーム終了する処理 ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
-//
-//	return;
-//}
-//
-////########## ウィンドウプロシージャ関数 ##########
-//LRESULT CALLBACK MY_WNDPROC(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
-//{
-//
-//	int closeMsgRet = 0;	//閉じるメッセージボックスの戻り値
-//
-//	switch (msg)
-//	{
-//		
-//	case WM_CREATE:	//ウィンドウの生成＆初期化
-//
-//		
-//		IsWM_CREATE = TRUE;	//WM_CREATE正常終了
-//		return 0;
-//
-//	case WM_CLOSE:		//閉じるボタンを押したとき
-//
-//		//MessageBox(hwnd, TEXT("ゲームを終了します"), TEXT("終了メッセージ"), MB_OK);
-//		break;
-//
-//	case WM_RBUTTONDOWN:	//マウスの右ボタンを押したとき
-//
-//		closeMsgRet = MessageBox(hwnd, TEXT("ゲームを終了しますか？"), TEXT("終了メッセージ"), MB_YESNO);
-//
-//		if (closeMsgRet == IDYES)
-//		{
-//			SendMessage(hwnd, WM_CLOSE, 0, 0);	//WM_CLOSEメッセージをキューに追加
-//		}
-//		else if (closeMsgRet == IDNO)
-//		{
-//			break;	//終了させない
-//		}
-//		break;
-//
-//	case WM_LBUTTONDOWN:	//マウスの左ボタンを押したとき
-//
-//		//WM_NCLBUTTONDOWN(タイトルバーでマウスの左ボタンを押した)メッセージをすぐに発行
-//		//PostMessage(hwnd, WM_NCLBUTTONDOWN, (WPARAM)HTCAPTION, lp);
-//		break;
-//
-//	case WM_DESTROY:	//ウィンドウが破棄された(なくなった)とき
-//
-//		PostQuitMessage(0);		//メッセージキューに WM_QUIT を送る
-//		return 0;
-//	}
-//
-//	//デフォルトのウィンドウプロシージャ関数を呼び出す
-//	return DefWindowProc(hwnd, msg, wp, lp);
-//}
 
 //########## 文字をデフォルトフォントに設定する関数 ##########
 //引　数：BOOL：アンチエイリアスをする
