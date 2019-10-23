@@ -196,12 +196,6 @@ typedef STRUCT_MUSIC MUSIC;
 WNDPROC WndProc;						//ウィンドウプロシージャのアドレス
 BOOL IsWM_CREATE = FALSE;				//WM_CREATEが正常に動作したか判断する
 
-//FPS関連
-int StartTimeFps;						//測定開始時刻
-int CountFps;							//カウンタ
-float CalcFps;							//計算結果
-int SampleNumFps = GAME_FPS_SPEED;		//平均を取るサンプル数
-
 //キーボード関連
 char AllKeyState[256];			//すべてのキーの状態が入
 
@@ -362,11 +356,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ChangeWindowMode(GAME_WINDOW_MODECHANGE);					//ウィンドウモードに設定
 	SetGraphMode(GAME_WIDTH, GAME_HEIGHT, GAME_COLOR);			//指定の数値で画面を表示する
 
-	SetWindowStyleMode(SET_WINDOW_ST_MODE_DEFAULT);			//タイトルバーあり
+	SetWindowStyleMode(SET_WINDOW_ST_MODE_DEFAULT);				//タイトルバーあり
 
 	SetMainWindowText(TEXT(GAME_WINDOW_NAME));					//タイトルの文字
 
-	SetWindowIconID(333);	//ウインドウのアイコン変更
+	SetWindowIconID(333);										//ウインドウのアイコン変更
 
 	if (DxLib_Init() == -1) { return -1; }						//ＤＸライブラリ初期化処理
 
