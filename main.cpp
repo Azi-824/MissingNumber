@@ -3,23 +3,10 @@
 
 //########## ヘッダーファイル読み込み ##########
 #include "DxLib.h"
+#include "main.hpp"
 #include <direct.h>
 
 //########## マクロ定義 ##########
-#define GAME_WIDTH	1000		//画面の横の大きさ
-#define GAME_HEIGHT	600			//画面の縦の大きさ
-#define Q_ERIA_WIDTH	960		//問題を描画する画面の大きさ
-#define Q_ERIA_HEIGHT	450		//問題を描画する画面の大きさ
-#define GAME_COLOR	32			//画面のカラービット
-
-#define GAME_WINDOW_NAME	"Missing Numbers"		//ウィンドウのタイトル
-#define GAME_WINDOW_MODECHANGE	TRUE			//TRUE：ウィンドウモード / FALSE：フルスクリーン
-
-#define SET_WINDOW_ST_MODE_DEFAULT			0	//デフォルト
-#define SET_WINDOW_ST_MODE_TITLE_NONE		1	//タイトルバーなし
-#define SET_WINDOW_ST_MODE_TITLE_FLAME_NONE	2	//タイトルバーとフレームなし
-#define SET_WINDOW_ST_MODE_FLAME_NONE		3	//フレームなし
-
 #define EASY_IMAGE		"LEVELIMAGE\\easy.png"		//難易度簡単の画像
 #define NORMAL_IMAGE	"LEVELIMAGE\\normal.png"	//難易度普通の画像
 #define HARD_IMAGE		"LEVELIMAGE\\hard.png"		//難易度難しいの画像
@@ -69,8 +56,6 @@
 #define DATA_NORMAL		"C:\\Missing Numbers_SAVE\\normal.dat"		//「ふつう」のセーブデータ
 #define DATA_HARD		"C:\\Missing Numbers_SAVE\\hard.dat"		//「難しい」のセーブデータ
 #define GAME_DATA		"C:\\Missing Numbers_SAVE"					//セーブデータを入れるフォルダのパス
-
-#define GAME_FPS_SPEED	60
 
 #define GAZOU_SPACE		50				//画像と画像の間隔
 
