@@ -262,6 +262,7 @@ double NokoriTime = 0;	//残り時間
 int Time_Draw_X = 300;	//時間表示のX座標
 int Time_Draw_Y = 0;	//時間表示のY座標
 int LimitTime = 30;		//制限時間
+DATEDATA Date;			//日付
 
 //音関連
 MUSIC SE_TRUE;			//正解した時に鳴る音
@@ -275,6 +276,9 @@ MUSIC BGM;				//BGM
 int SaveData_Easy[128] = {0};		//簡単のセーブデータを入れる配列
 int SaveData_Normal[128] = { 0 };	//普通のセーブデータを入れる配列
 int SaveData_Hard[128] = { 0 };		//難しいのセーブデータを入れる配列
+int DateData_Easy[128] = { 0 };		//簡単の日付データを入れる配列
+int DateData_Normal[128] = { 0 };	//普通の日付データを入れる配列
+int DateData_Hard[128] = { 0 };		//難しいの日付データを入れる配列
 int SaveNowCnt = 0;		//セーブデータが何個入っているかカウントする変数
 int SaveMaxNum = 0;		//セーブデータの中の最大値
 int SaveMinNum = 0;		//セーブデータの中の最小値
@@ -349,6 +353,8 @@ VOID SWAP(int *, int*);					//値を入れ替える関数
 int PARTITION(int[], int, int);			//pivotを決め、pivotを境目に振り分けする関数
 VOID QUICK_SORT(int[], int, int);		//クイックソート関数
 VOID SORT_SAVEDATA(int[]);				//セーブデータを降順に並べ替える関数
+
+VOID GET_DATEDATA();					//日付を取得する関数
 
 //########## プログラムで最初に実行される関数 ##########
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -2296,6 +2302,8 @@ int READ_SAVEDATA(int data[])
 			return -1;	//エラーが発生したら、-1を返す
 		}
 
+		
+
 		while (!feof(fp)) {		//ファイルの終端になるまで読み込み
 			fread(&data[SaveNowCnt], sizeof(data), 1, fp);
 			SaveNowCnt++;
@@ -2506,5 +2514,12 @@ VOID DRAW_WAIT_TIME(int wait)
 	
 	DeleteFontToHandle(Font);	//フォントハンドル削除
 
+	return;
+}
+
+//############ 日付を取得する関数 ########################
+VOID GET_DATEDATA()
+{
+	GetDateTime(&Date);		//日付取得
 	return;
 }
