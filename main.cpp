@@ -344,15 +344,16 @@ BOOL CHECK_SELECT(int num);				//‚Í‚¢‚©‚¢‚¢‚¦‚©”»’è‚·‚éŠÖ”A‚Í‚¢‚Ìê‡ATRUE‚ğ•
 VOID MOVE_QUESTION(GAZOU *, RECT *);	//–â‘è‚Ì•`‰æˆÊ’u‚ğˆÚ“®‚³‚¹‚éŠÖ”
 
 int WRITE_SAVEDATA(int);				//ƒZ[ƒuƒf[ƒ^‚ğ‘‚«‚ŞŠÖ”
-int READ_SAVEDATA(int []);				//ƒZ[ƒuƒf[ƒ^‚ğ“Ç‚İ‚ŞŠÖ”
+int READ_SAVEDATA(int [],int[]);		//ƒZ[ƒuƒf[ƒ^‚ğ“Ç‚İ‚ŞŠÖ”
 VOID SAVEDATA_MAX(int [],int);			//ƒZ[ƒuƒf[ƒ^‚ÌÅ‘å’l‚ğæ“¾‚·‚éŠÖ”
 VOID SAVEDATA_MIN(int [],int);			//ƒZ[ƒuƒf[ƒ^‚ÌÅ¬’l‚ğæ“¾‚·‚éŠÖ”
 int DELETE_DATA(int);					//ƒZ[ƒuƒf[ƒ^íœŠÖ”
+VOID DATA_BUNKATU(int[], int[]);		//“Ç‚İ‚ñ‚¾ƒZ[ƒuƒf[ƒ^‚ğ“ú•t‚Æ“¾“_‚É•ªŠ„‚·‚éŠÖ”
 
 VOID SWAP(int *, int*);					//’l‚ğ“ü‚ê‘Ö‚¦‚éŠÖ”
 int PARTITION(int[], int, int);			//pivot‚ğŒˆ‚ßApivot‚ğ‹«–Ú‚ÉU‚è•ª‚¯‚·‚éŠÖ”
 VOID QUICK_SORT(int[], int, int);		//ƒNƒCƒbƒNƒ\[ƒgŠÖ”
-VOID SORT_SAVEDATA(int[]);				//ƒZ[ƒuƒf[ƒ^‚ğ~‡‚É•À‚×‘Ö‚¦‚éŠÖ”
+VOID SORT_SAVEDATA(int[],int[]);		//ƒZ[ƒuƒf[ƒ^‚ğ~‡‚É•À‚×‘Ö‚¦‚éŠÖ”
 
 VOID GET_DATEDATA();					//“ú•t‚ğæ“¾‚·‚éŠÖ”
 
@@ -1042,21 +1043,21 @@ VOID MY_GAME_RANKING(VOID)
 		{
 		case (int)GAME_LEVEL_EASY:	//“ïˆÕ“xAŠÈ’P‚Ì‚Æ‚«
 
-			SORT_SAVEDATA(SaveData_Easy);	//uŠÈ’Pv‚ÌƒZ[ƒuƒf[ƒ^‚ğ“Ç‚İ‚ñ‚ÅA~‡‚É•À‚Ñ‘Ö‚¦‚é
+			SORT_SAVEDATA(SaveData_Easy, DateData_Easy);	//uŠÈ’Pv‚ÌƒZ[ƒuƒf[ƒ^‚ğ“Ç‚İ‚ñ‚ÅA~‡‚É•À‚Ñ‘Ö‚¦‚é
 			Sort_flg = TRUE;				//ƒ\[ƒgƒtƒ‰ƒO‚ğ—§‚Ä‚é
 
 			break;
 
 		case (int)GAME_LEVEL_NORMAL: //“ïˆÕ“xA•’Ê‚Ì‚Æ‚«
 
-			SORT_SAVEDATA(SaveData_Normal);	//u•’Êv‚ÌƒZ[ƒuƒf[ƒ^‚ğ“Ç‚İ‚ñ‚ÅA~‡‚É•À‚Ñ‘Ö‚¦‚é
+			SORT_SAVEDATA(SaveData_Normal,DateData_Normal);	//u•’Êv‚ÌƒZ[ƒuƒf[ƒ^‚ğ“Ç‚İ‚ñ‚ÅA~‡‚É•À‚Ñ‘Ö‚¦‚é
 			Sort_flg = TRUE;				//ƒ\[ƒgƒtƒ‰ƒO‚ğ—§‚Ä‚é
 
 			break;
 
 		case (int)GAME_LEVEL_HARD:	//“ïˆÕ“xA“ï‚µ‚¢‚Ì‚Æ‚«
 
-			SORT_SAVEDATA(SaveData_Hard);	//u“ï‚µ‚¢v‚ÌƒZ[ƒuƒf[ƒ^‚ğ“Ç‚İ‚ñ‚ÅA~‡‚É•À‚Ñ‘Ö‚¦‚é
+			SORT_SAVEDATA(SaveData_Hard,DateData_Hard);	//u“ï‚µ‚¢v‚ÌƒZ[ƒuƒf[ƒ^‚ğ“Ç‚İ‚ñ‚ÅA~‡‚É•À‚Ñ‘Ö‚¦‚é
 			Sort_flg = TRUE;				//ƒ\[ƒgƒtƒ‰ƒO‚ğ—§‚Ä‚é
 
 			break;
@@ -1265,7 +1266,7 @@ VOID MY_CREATE_QUESTION(VOID)
 		{
 			if (MY_CHECK_RECT_ATARI(Q_rect[cnt], Q_rect[cnt_r]) == TRUE)		//—Ìˆæ‚ª”í‚Á‚Ä‚¢‚½‚ç
 			{
-				cnt--;											//cnt‚Ì’l‚ğƒ}ƒCƒiƒX‚µ‚ÄAÀ•W‚ğİ’è‚µ‚È‚¨‚·
+				cnt--;												//cnt‚Ì’l‚ğƒ}ƒCƒiƒX‚µ‚ÄAÀ•W‚ğİ’è‚µ‚È‚¨‚·
 				Number_Image[cnt + cnt_r].Positon_flg = FALSE;		//À•Wİ’è‚Ìƒtƒ‰ƒO‚ğFALSE‚É‚·‚é
 				break;
 			}
@@ -2287,7 +2288,7 @@ int WRITE_SAVEDATA(int data)
 }
 
 //############## ƒZ[ƒuƒf[ƒ^‚ğ“Ç‚İ‚ŞŠÖ” #####################
-int READ_SAVEDATA(int data[])
+int READ_SAVEDATA(int date[] ,int data[])
 {
 	SaveNowCnt = 0;
 
@@ -2305,7 +2306,7 @@ int READ_SAVEDATA(int data[])
 		
 
 		while (!feof(fp)) {		//ƒtƒ@ƒCƒ‹‚ÌI’[‚É‚È‚é‚Ü‚Å“Ç‚İ‚İ
-			fread(&data[SaveNowCnt], sizeof(data), 1, fp);
+			fread(&date[SaveNowCnt], sizeof(date), 1, fp);
 			SaveNowCnt++;
 		}
 
@@ -2322,7 +2323,7 @@ int READ_SAVEDATA(int data[])
 		}
 
 		while (!feof(fp)) {		//ƒtƒ@ƒCƒ‹‚ÌI’[‚É‚È‚é‚Ü‚Å“Ç‚İ‚İ
-			fread(&data[SaveNowCnt], sizeof(data), 1, fp);
+			fread(&date[SaveNowCnt], sizeof(date), 1, fp);
 			SaveNowCnt++;
 		}
 
@@ -2340,7 +2341,7 @@ int READ_SAVEDATA(int data[])
 		}
 
 		while (!feof(fp)) {		//ƒtƒ@ƒCƒ‹‚ÌI’[‚É‚È‚é‚Ü‚Å“Ç‚İ‚İ
-			fread(&data[SaveNowCnt], sizeof(data), 1, fp);
+			fread(&date[SaveNowCnt], sizeof(date), 1, fp);
 			SaveNowCnt++;
 		}
 
@@ -2353,6 +2354,9 @@ int READ_SAVEDATA(int data[])
 		break;
 
 	}
+
+	//“Ç‚İ‚ñ‚¾ƒZ[ƒuƒf[ƒ^‚ğ“ú•t‚Æ“¾“_‚É•ªŠ„
+	DATA_BUNKATU(date,data);
 
 	return 0;
 }
@@ -2400,9 +2404,9 @@ VOID QUICK_SORT(int array[], int left, int right)
 }
 
 //############## ƒZ[ƒuƒf[ƒ^‚ğ~‡‚É•À‚×‘Ö‚¦‚éŠÖ” #################
-VOID SORT_SAVEDATA(int array[])
+VOID SORT_SAVEDATA(int array[],int date[])
 {
-	READ_SAVEDATA(array);	//ƒZ[ƒuƒf[ƒ^‚Ì“Ç‚İ‚İ
+	READ_SAVEDATA(date,array);	//ƒZ[ƒuƒf[ƒ^‚Ì“Ç‚İ‚İ
 
 	SAVEDATA_MAX(array, SaveNowCnt);	//Å‘å’læ“¾
 
@@ -2522,4 +2526,31 @@ VOID GET_DATEDATA()
 {
 	GetDateTime(&Date);		//“ú•tæ“¾
 	return;
+}
+
+//############# “Ç‚İ‚ñ‚¾ƒZ[ƒuƒf[ƒ^‚ğ“ú•t‚ÆA“¾“_‚É•ª‚¯‚éŠÖ” ###############
+VOID DATA_BUNKATU(int date[], int point[])
+{
+	int work[POINT_MAX_KETA] = { 0 };	//ì‹Æ—p”z—ñ
+	int weight = 1;						//Œ…‚Ìd‚İ
+
+	for (int cnt = 0; cnt < SaveNowCnt; cnt++)
+	{
+		//“¾“_‚ğæ‚èo‚·ˆ—
+		for (int i = 0; i < POINT_MAX_KETA; i++)
+		{
+			work[i] = (date[cnt] % 10);	//1Œ…–Ú‚ğæ‚è‚¾‚·
+			date[cnt] / 10;				//Ÿ‚ÌŒ…‚Ì€”õ
+		}
+		//æ‚èo‚µ‚½“¾“_‚ğ”z—ñ‚ÉŠi”[‚·‚éˆ—
+		for (int i = 0; i < POINT_MAX_KETA; i++)
+		{
+			point[cnt] += work[i] * weight;	//ì‹Æ—p”z—ñ‚©‚ç“¾“_”z—ñ‚Öd‚İ‚ğ•t‚¯‚ÄAŠi”[
+			weight *= 10;					//d‚İ‚ğˆêŒ…•ª‘‚â‚·
+		}
+
+	}
+
+	return;
+
 }

@@ -22,3 +22,4 @@
 
 #define GAME_FPS_SPEED	60						//FPS速度
 
+#define POINT_MAX_KETA	2	//データの得点のMAX桁数
