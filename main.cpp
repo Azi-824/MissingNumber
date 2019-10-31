@@ -1043,21 +1043,21 @@ VOID MY_GAME_RANKING(VOID)
 		{
 		case (int)GAME_LEVEL_EASY:	//難易度、簡単のとき
 
-			SORT_SAVEDATA(SaveData_Easy, DateData_Easy);	//「簡単」のセーブデータを読み込んで、降順に並び替える
+			SORT_SAVEDATA(DateData_Easy,SaveData_Easy);	//「簡単」のセーブデータを読み込んで、降順に並び替える
 			Sort_flg = TRUE;				//ソートフラグを立てる
 
 			break;
 
 		case (int)GAME_LEVEL_NORMAL: //難易度、普通のとき
 
-			SORT_SAVEDATA(SaveData_Normal,DateData_Normal);	//「普通」のセーブデータを読み込んで、降順に並び替える
+			SORT_SAVEDATA(DateData_Normal,SaveData_Normal);	//「普通」のセーブデータを読み込んで、降順に並び替える
 			Sort_flg = TRUE;				//ソートフラグを立てる
 
 			break;
 
 		case (int)GAME_LEVEL_HARD:	//難易度、難しいのとき
 
-			SORT_SAVEDATA(SaveData_Hard,DateData_Hard);	//「難しい」のセーブデータを読み込んで、降順に並び替える
+			SORT_SAVEDATA(DateData_Hard,SaveData_Hard);	//「難しい」のセーブデータを読み込んで、降順に並び替える
 			Sort_flg = TRUE;				//ソートフラグを立てる
 
 			break;
@@ -2248,33 +2248,33 @@ int WRITE_SAVEDATA(int data)
 	{
 	case (int)GAME_LEVEL_EASY:	//難易度、簡単のとき
 		
-		fp = fopen(DATA_EASY, "ab");//バイナリファイルを開く
+		fp = fopen(DATA_EASY, "a");//バイナリファイルを開く
 		if (fp == NULL) {//エラーが起きたら-1を返す
 			return -1;
 		}
-		fwrite(&data, sizeof(int), 1, fp); // dataを出力
+		fprintf(fp, "%d\n", data);
 		fclose(fp);//ファイルを閉じる
 
 		break;
 
 	case (int)GAME_LEVEL_NORMAL: //難易度、普通のとき
 		
-		fp = fopen(DATA_NORMAL , "ab");//バイナリファイルを開く
+		fp = fopen(DATA_NORMAL , "a");//バイナリファイルを開く
 		if (fp == NULL) {//エラーが起きたら-1を返す
 			return -1;
 		}
-		fwrite(&data, sizeof(int), 1, fp); // dataを出力
+		fprintf(fp, "%d", data);
 		fclose(fp);//ファイルを閉じる
 
 		break;
 
 	case (int)GAME_LEVEL_HARD:	//難易度、難しいのとき
 		
-		fp = fopen(DATA_HARD, "ab");//バイナリファイルを開く
+		fp = fopen(DATA_HARD, "a");//バイナリファイルを開く
 		if (fp == NULL) {//エラーが起きたら-1を返す
 			return -1;
 		}
-		fwrite(&data, sizeof(int), 1, fp); // dataを出力
+		fprintf(fp, "%d", data);
 		fclose(fp);//ファイルを閉じる
 
 		break;
@@ -2288,6 +2288,8 @@ int WRITE_SAVEDATA(int data)
 }
 
 //############## セーブデータを読み込む関数 #####################
+//date[]:日付
+//data[]:得点
 int READ_SAVEDATA(int date[] ,int data[])
 {
 	SaveNowCnt = 0;
@@ -2298,17 +2300,20 @@ int READ_SAVEDATA(int date[] ,int data[])
 	{
 	case (int)GAME_LEVEL_EASY:	//難易度、簡単のとき
 
-		fp = fopen(DATA_EASY, "rb");
+		fp = fopen(DATA_EASY, "r");
 		if (fp == NULL) {
 			return -1;	//エラーが発生したら、-1を返す
 		}
 
-		
-
-		while (!feof(fp)) {		//ファイルの終端になるまで読み込み
-			fread(&date[SaveNowCnt], sizeof(date), 1, fp);
+		while (fscanf(fp, "%d", &data[SaveNowCnt]) != EOF)
+		{
 			SaveNowCnt++;
 		}
+
+		//while (!feof(fp)) {		//ファイルの終端になるまで読み込み
+		//	fread(&date[SaveNowCnt], sizeof(date), 1, fp);
+		//	SaveNowCnt++;
+		//}
 
 		SaveNowCnt--;
 
@@ -2317,7 +2322,7 @@ int READ_SAVEDATA(int date[] ,int data[])
 
 	case (int)GAME_LEVEL_NORMAL: //難易度、普通のとき
 
-		fp = fopen(DATA_NORMAL, "rb");
+		fp = fopen(DATA_NORMAL, "r");
 		if (fp == NULL) {
 			return -1;	//エラーが発生したら、-1を返す
 		}
@@ -2335,7 +2340,7 @@ int READ_SAVEDATA(int date[] ,int data[])
 
 	case (int)GAME_LEVEL_HARD:	//難易度、難しいのとき
 
-		fp = fopen(DATA_HARD, "rb");
+		fp = fopen(DATA_HARD, "r");
 		if (fp == NULL) {
 			return -1;	//エラーが発生したら、-1を返す
 		}
@@ -2356,7 +2361,7 @@ int READ_SAVEDATA(int date[] ,int data[])
 	}
 
 	//読み込んだセーブデータを日付と得点に分割
-	DATA_BUNKATU(date,data);
+	//DATA_BUNKATU(date,data);
 
 	return 0;
 }
@@ -2374,7 +2379,7 @@ VOID SWAP(int *x, int *y)
 //############## pivotを決め、pivotを境目に振り分けする関数 ################
 int PARTITION(int array[], int left, int right)
 {
-	int i, j, pivot;
+	int i = 0, j = 0, pivot = 0;
 	i = left;
 	j = right + 1;
 	pivot = left;   // 先頭要素をpivotとする
