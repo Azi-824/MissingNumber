@@ -1043,21 +1043,21 @@ VOID MY_GAME_RANKING(VOID)
 		{
 		case (int)GAME_LEVEL_EASY:	//難易度、簡単のとき
 
-			SORT_SAVEDATA(DateData_Easy,SaveData_Easy);	//「簡単」のセーブデータを読み込んで、降順に並び替える
+			SORT_SAVEDATA(SaveData_Easy, DateData_Easy);	//「簡単」のセーブデータを読み込んで、降順に並び替える
 			Sort_flg = TRUE;				//ソートフラグを立てる
 
 			break;
 
 		case (int)GAME_LEVEL_NORMAL: //難易度、普通のとき
 
-			SORT_SAVEDATA(DateData_Normal,SaveData_Normal);	//「普通」のセーブデータを読み込んで、降順に並び替える
+			SORT_SAVEDATA(SaveData_Normal, DateData_Normal);	//「普通」のセーブデータを読み込んで、降順に並び替える
 			Sort_flg = TRUE;				//ソートフラグを立てる
 
 			break;
 
 		case (int)GAME_LEVEL_HARD:	//難易度、難しいのとき
 
-			SORT_SAVEDATA(DateData_Hard,SaveData_Hard);	//「難しい」のセーブデータを読み込んで、降順に並び替える
+			SORT_SAVEDATA(SaveData_Hard,DateData_Hard);	//「難しい」のセーブデータを読み込んで、降順に並び替える
 			Sort_flg = TRUE;				//ソートフラグを立てる
 
 			break;
@@ -2409,6 +2409,8 @@ VOID QUICK_SORT(int array[], int left, int right)
 }
 
 //############## セーブデータを降順に並べ替える関数 #################
+//array[]:得点
+//date[] :日付
 VOID SORT_SAVEDATA(int array[],int date[])
 {
 	READ_SAVEDATA(date,array);	//セーブデータの読み込み
