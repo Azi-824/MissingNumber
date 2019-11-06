@@ -69,9 +69,7 @@
 
 #define MUSIC_BGM		"BGM\\cyber42.mp3"			//BGM
 
-#define DATA_EASY		"C:\\Missing Numbers_SAVE\\easy.dat"		//「かんたん」のセーブデータ
-#define DATA_NORMAL		"C:\\Missing Numbers_SAVE\\normal.dat"		//「ふつう」のセーブデータ
-#define DATA_HARD		"C:\\Missing Numbers_SAVE\\hard.dat"		//「難しい」のセーブデータ
+#define DATA_EASY		"C:\\Missing Numbers_SAVE\\Save.dat"		//セーブデータ
 #define GAME_DATA		"C:\\Missing Numbers_SAVE"					//セーブデータを入れるフォルダのパス
 
 #define GAZOU_SPACE		50				//画像と画像の間隔
@@ -111,12 +109,10 @@ enum GAME_SCENE {
 	GAME_SCENE_TITLE,	//タイトル画面
 	GAME_SCENE_SETUMEI,	//説明画面
 	GAME_SCENE_CHECK,	//はいかいいえの選択肢を描画する画面
-	GAME_SCENE_SELECT,	//レベル選択画面
 	GAME_SCENE_SET,		//設定画面
 	GAME_SCENE_PLAY,	//プレイ画面
 	GAME_SCENE_RESULT,	//結果表示画面
 	GAME_SCENE_RANKING,	//ランキング表示画面
-	GAME_SCENE_END		//エンド画面
 };
 
 enum GAME_LEVEL {
@@ -285,7 +281,7 @@ MUSIC SE_COUNTDOWN;		//カウントダウンの時の効果音
 MUSIC BGM;				//BGM
 
 //セーブデータ関連
-int SaveData_Easy[128] = { 0 };		//簡単のセーブデータを入れる配列
+int SaveData[128] = { 0 };		//簡単のセーブデータを入れる配列
 int SaveData_Normal[128] = { 0 };	//普通のセーブデータを入れる配列
 int SaveData_Hard[128] = { 0 };		//難しいのセーブデータを入れる配列
 int DateData_Easy[128] = { 0 };		//簡単の日付データを入れる配列
@@ -303,7 +299,6 @@ VOID MY_ALL_KEYDOWN_UPDATE(VOID);	//キーの入力状態を更新する関数
 VOID MY_GAME_TITLE(VOID);			//タイトル画面の関数
 VOID MY_GAME_SETUMEI(VOID);			//説明画面の関数
 VOID MY_GAME_CHECK(VOID);			//確認画面の関数
-VOID MY_GAME_SELECT(VOID);			//レベル選択画面の関数
 VOID MY_GAME_SET(VOID);				//設定画面の関数
 VOID MY_GAME_PLAY(VOID);			//プレイ画面の関数
 VOID MY_GAME_RESULT(VOID);			//リザルト画面の関数
@@ -349,6 +344,7 @@ VOID GET_PLAYER_ANSER(int);			//プレイヤーの回答を取得する関数
 VOID SET_END_IMAGE(VOID);			//終了の選択肢の画像の設定をする関数
 VOID SET_END_SETU(VOID);			//説明で使用する小物（矢印など）の設定をする関数
 BOOL MY_MUSIC_LOAD(MUSIC *, const char *);	//音を読み込む設定をする関数
+VOID SetLevel();					//ゲームレベルをランダムに設定する関数
 
 VOID CHECK_GAME_CONTINUE(int);			//ゲーム続行か終了か判定する関数
 VOID CHECK_GAME_START(int);				//ゲーム開始か終了か判定する関数

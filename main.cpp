@@ -123,12 +123,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			break;	//確認画面の処理ここまで
 
-		case (int)GAME_SCENE_SELECT:	//レベル選択画面の処理ここから
-
-			MY_GAME_SELECT();	//レベル選択画面の処理ここから
-
-			break; //レベル選択画面の処理ここまで
-
 		case (int)GAME_SCENE_SET://設定画面の処理ここから
 
 			MY_GAME_SET();		//設定画面の処理
@@ -448,7 +442,7 @@ VOID MY_GAME_CHECK(VOID)
 		if (Delete_flg == TRUE)	//セーブデータ削除フラグが立っていたら、
 		{
 			//セーブデータ削除の処理
-			DELETE_DATA(SaveData_Easy[0]);		//簡単、のデータ削除
+			DELETE_DATA(SaveData[0]);		//簡単、のデータ削除
 			DELETE_DATA(SaveData_Normal[0]);	//普通、のデータ削除
 			DELETE_DATA(SaveData_Hard[0]);		//難しい、のデータ削除
 
@@ -490,46 +484,6 @@ VOID MY_GAME_CHECK(VOID)
 	return;
 }
 
-//########## レベル選択画面の関数 ##########
-VOID MY_GAME_SELECT(VOID)
-{
-
-	BackImageNow = BACKIMAGE_SELECT;	//背景画像の種類をセレクト画面に変更
-
-	DRAW_BACKIMAGE(&Back_Image[BackImageNow]);	//背景の描画
-
-	//画像の領域を設定
-	for (int cnt = 0; cnt < LEVEL_KIND; cnt++)
-	{
-		RECT_SETTING(&Level_Image_rect[cnt],
-			GameLevel_Image[cnt].X,
-			GameLevel_Image[cnt].Y,
-			GameLevel_Image[cnt].Width,
-			GameLevel_Image[cnt].Height);
-	}
-
-	GET_MOUSE_STATE(&Level_Image_rect[0], LEVEL_KIND);	//マウスの情報を取得
-
-	GAMELEVEL_IMAGE_DRAW();		//難易度画像の描画
-
-	//▼▼▼▼▼▼▼▼▼▼ タイトルの描画 ▼▼▼▼▼▼▼▼▼▼
-	char StrGameTitle[1][128] = { "難易度を選んでね" };
-	char StrFontTitle[128] = { "MS ゴシック" };	//大文字半角「MS」、半角「空白」、全角「ゴシック」
-
-	MY_DRAW_STRING_CENTER_CENTER(&StrGameTitle[0], 1, StrFontTitle, 64);		//画面中央に描画
-	//▲▲▲▲▲▲▲▲▲▲ タイトルの描画 ▲▲▲▲▲▲▲▲▲▲
-
-
-	//領域内でクリックされた時
-	if (Mouse_Date.Mouse_hover_flg == TRUE &&
-		Mouse_Date.Mouse_LeftClick_flg == TRUE)
-	{
-		//マウスがどの画像をクリックしたか判定
-		SET_GAME_LEVEL(Mouse_Date.Mouse_Click_Num);
-	}
-
-}
-
 //########## 設定画面の関数 ############
 VOID MY_GAME_SET(VOID)
 {
@@ -541,6 +495,8 @@ VOID MY_GAME_SET(VOID)
 		Number_Image[cnt].X = 0;
 		Number_Image[cnt].Y = 0;
 	}
+
+	SetLevel();			//ゲームレベルをランダムに変更
 
 	RESET_MOUSE_DATE();	//マウス情報リセット
 
@@ -692,95 +648,45 @@ VOID MY_GAME_RANKING(VOID)
 	//セーブデータをソートして読み込む
 	if (Sort_flg == FALSE)
 	{
+
+		SORT_SAVEDATA(SaveData);	//セーブデータを読み込んで、降順に並び替える
+		Sort_flg = TRUE;				//ソートフラグを立てる
+	}
+
+		//"ランキング"の文字の描画
+		int Font = CREATE_FONT(100);	//フォントハンドル作成
+		char Str_Ranking[128] = { "ランキング" };
+
+		int StrWidth = GetDrawFormatStringWidthToHandle(Font, &Str_Ranking[0]);	//デフォルトのフォントの横幅を取得
+
+		DrawStringToHandle(GAME_WIDTH / 2 - StrWidth / 2,
+			0,
+			&Str_Ranking[0],
+			GetColor(255, 0, 0),
+			Font);	//ランキングの描画
+
+		DeleteFontToHandle(Font);	//フォントハンドル削除
+
+
+
 		//難易度ごとに処理を分ける
-		switch (Game_Level_Now)
+		for (int cnt = 0; cnt < RANKING_NUM; cnt++)
 		{
-		case (int)GAME_LEVEL_EASY:	//難易度、簡単のとき
-
-			SORT_SAVEDATA(SaveData_Easy);	//「簡単」のセーブデータを読み込んで、降順に並び替える
-			Sort_flg = TRUE;				//ソートフラグを立てる
-
-			break;
-
-		case (int)GAME_LEVEL_NORMAL: //難易度、普通のとき
-
-			SORT_SAVEDATA(SaveData_Normal);	//「普通」のセーブデータを読み込んで、降順に並び替える
-			Sort_flg = TRUE;				//ソートフラグを立てる
-
-			break;
-
-		case (int)GAME_LEVEL_HARD:	//難易度、難しいのとき
-
-			SORT_SAVEDATA(SaveData_Hard);	//「難しい」のセーブデータを読み込んで、降順に並び替える
-			Sort_flg = TRUE;				//ソートフラグを立てる
-
-			break;
-
-		default:
-			break;
+			DRAW_RANKING(SaveData[cnt], cnt);	//セーブデータの描画
 
 		}
 
-	}
+		SET_END_IMAGE();	//終了の選択肢の設定
 
-	//"ランキング"の文字の描画
-	int Font = CREATE_FONT(100);	//フォントハンドル作成
-	char Str_Ranking[128] = { "ランキング" };
+		DRAW_END_IMAGE();	//終了の選択肢の描画
 
-	int StrWidth = GetDrawFormatStringWidthToHandle(Font, &Str_Ranking[0]);	//デフォルトのフォントの横幅を取得
-
-	DrawStringToHandle(GAME_WIDTH / 2 - StrWidth / 2,
-		0,
-		&Str_Ranking[0],
-		GetColor(255, 0, 0),
-		Font);	//ランキングの描画
-
-	DeleteFontToHandle(Font);	//フォントハンドル削除
-
-
-
-	//難易度ごとに処理を分ける
-	for (int cnt = 0; cnt < RANKING_NUM; cnt++)
-	{
-
-		switch (Game_Level_Now)
+		//領域内でクリックされた時
+		if (Mouse_Date.Mouse_hover_flg == TRUE &&
+			Mouse_Date.Mouse_LeftClick_flg == TRUE)
 		{
-		case (int)GAME_LEVEL_EASY:	//難易度、簡単のとき
-
-			DRAW_RANKING(SaveData_Easy[cnt],cnt);	//セーブデータの描画
-
-			break;
-
-		case (int)GAME_LEVEL_NORMAL: //難易度、普通のとき
-
-			DRAW_RANKING(SaveData_Normal[cnt], cnt);	//セーブデータの描画
-
-			break;
-
-		case (int)GAME_LEVEL_HARD:	//難易度、難しいのとき
-
-			DRAW_RANKING(SaveData_Hard[cnt], cnt);	//セーブデータの描画
-
-			break;
-
-		default:
-			break;
-
+			//ゲーム終了か、ゲーム続行か判定
+			CHECK_GAME_CONTINUE(Mouse_Date.Mouse_Click_Num);
 		}
-
-	}
-
-	SET_END_IMAGE();	//終了の選択肢の設定
-
-	DRAW_END_IMAGE();	//終了の選択肢の描画
-
-	//領域内でクリックされた時
-	if (Mouse_Date.Mouse_hover_flg == TRUE &&
-		Mouse_Date.Mouse_LeftClick_flg == TRUE)
-	{
-		//ゲーム終了か、ゲーム続行か判定
-		CHECK_GAME_CONTINUE(Mouse_Date.Mouse_Click_Num);
-	}
 
 }
 
@@ -1640,7 +1546,7 @@ VOID CHECK_GAME_START(int num)
 	}
 	else if (Start_flg == TRUE)
 	{
-		GameSceneNow = (int)GAME_SCENE_SELECT;//ゲームシーンをレベル選択画面に変える
+		GameSceneNow = (int)GAME_SCENE_SET;//ゲームシーンを設定画面に変える
 	}
 
 	return;
@@ -1898,45 +1804,12 @@ int WRITE_SAVEDATA(int data)
 
 	FILE *fp;
 
-	switch (Game_Level_Now)
-	{
-	case (int)GAME_LEVEL_EASY:	//難易度、簡単のとき
-		
-		fp = fopen(DATA_EASY, "a");//バイナリファイルを開く
-		if (fp == NULL) {//エラーが起きたら-1を返す
-			return -1;
-		}
-		fprintf(fp, "%d\n", data);
-		fclose(fp);//ファイルを閉じる
-
-		break;
-
-	case (int)GAME_LEVEL_NORMAL: //難易度、普通のとき
-		
-		fp = fopen(DATA_NORMAL , "a");//バイナリファイルを開く
-		if (fp == NULL) {//エラーが起きたら-1を返す
-			return -1;
-		}
-		fprintf(fp, "%d", data);
-		fclose(fp);//ファイルを閉じる
-
-		break;
-
-	case (int)GAME_LEVEL_HARD:	//難易度、難しいのとき
-		
-		fp = fopen(DATA_HARD, "a");//バイナリファイルを開く
-		if (fp == NULL) {//エラーが起きたら-1を返す
-			return -1;
-		}
-		fprintf(fp, "%d", data);
-		fclose(fp);//ファイルを閉じる
-
-		break;
-
-	default:
-		break;
-
+	fp = fopen(DATA_EASY, "a");//バイナリファイルを開く
+	if (fp == NULL) {//エラーが起きたら-1を返す
+		return -1;
 	}
+	fprintf(fp, "%d\n", data);
+	fclose(fp);//ファイルを閉じる
 
 	return 0;
 }
@@ -1950,72 +1823,17 @@ int READ_SAVEDATA(int date[])
 
 	FILE *fp;
 
-	switch (Game_Level_Now)
-	{
-	case (int)GAME_LEVEL_EASY:	//難易度、簡単のとき
-
-		fp = fopen(DATA_EASY, "r");
-		if (fp == NULL) {
-			return -1;	//エラーが発生したら、-1を返す
-		}
-
-		while (fscanf(fp, "%d", &date[SaveNowCnt]) != EOF)
-		{
-			SaveNowCnt++;
-		}
-
-		//while (!feof(fp)) {		//ファイルの終端になるまで読み込み
-		//	fread(&date[SaveNowCnt], sizeof(date), 1, fp);
-		//	SaveNowCnt++;
-		//}
-
-		//SaveNowCnt--;
-
-		fclose(fp);
-		break;
-
-	case (int)GAME_LEVEL_NORMAL: //難易度、普通のとき
-
-		fp = fopen(DATA_NORMAL, "r");
-		if (fp == NULL) {
-			return -1;	//エラーが発生したら、-1を返す
-		}
-
-		while (!feof(fp)) {		//ファイルの終端になるまで読み込み
-			fread(&date[SaveNowCnt], sizeof(date), 1, fp);
-			SaveNowCnt++;
-		}
-
-		SaveNowCnt--;
-
-		fclose(fp);
-
-		break;
-
-	case (int)GAME_LEVEL_HARD:	//難易度、難しいのとき
-
-		fp = fopen(DATA_HARD, "r");
-		if (fp == NULL) {
-			return -1;	//エラーが発生したら、-1を返す
-		}
-
-		while (!feof(fp)) {		//ファイルの終端になるまで読み込み
-			fread(&date[SaveNowCnt], sizeof(date), 1, fp);
-			SaveNowCnt++;
-		}
-
-		SaveNowCnt--;
-
-		fclose(fp);
-		break;
-
-	default:
-		break;
-
+	fp = fopen(DATA_EASY, "r");
+	if (fp == NULL) {
+		return -1;	//エラーが発生したら、-1を返す
 	}
 
-	//読み込んだセーブデータを日付と得点に分割
-	//DATA_BUNKATU(date,data);
+	while (fscanf(fp, "%d", &date[SaveNowCnt]) != EOF)
+	{
+		SaveNowCnt++;
+	}
+
+	fclose(fp);
 
 	return 0;
 }
@@ -2118,19 +1936,7 @@ int DELETE_DATA(int data)
 {
 	FILE *fp;
 
-	fp = fopen(DATA_EASY, "wb");//バイナリファイルを開く
-	if (fp == NULL) {//エラーが起きたら-1を返す
-		return -1;
-	}
-	fclose(fp);//ファイルを閉じる
-
-	fp = fopen(DATA_NORMAL, "wb");//バイナリファイルを開く
-	if (fp == NULL) {//エラーが起きたら-1を返す
-		return -1;
-	}
-	fclose(fp);//ファイルを閉じる
-
-	fp = fopen(DATA_HARD, "wb");//バイナリファイルを開く
+	fp = fopen(DATA_EASY, "w");//バイナリファイルを開く
 	if (fp == NULL) {//エラーが起きたら-1を返す
 		return -1;
 	}
@@ -2210,6 +2016,19 @@ VOID DATA_BUNKATU(int date[], int point[])
 		}
 
 	}
+
+	return;
+
+}
+
+//************ 問題レベルをランダムに設定する関数 *****************
+VOID SetLevel()
+{
+	int rand = 0;	//乱数を入れる変数
+
+	rand = GetRand(LEVEL_KIND - 1);	//ゲームレベルの数内で乱数を生成
+
+	Game_Level_Now = rand;		//生成した乱数を現在のゲームレベルに設定
 
 	return;
 
