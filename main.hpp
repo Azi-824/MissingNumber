@@ -282,11 +282,6 @@ MUSIC BGM;				//BGM
 
 //セーブデータ関連
 int SaveData[128] = { 0 };		//簡単のセーブデータを入れる配列
-int SaveData_Normal[128] = { 0 };	//普通のセーブデータを入れる配列
-int SaveData_Hard[128] = { 0 };		//難しいのセーブデータを入れる配列
-int DateData_Easy[128] = { 0 };		//簡単の日付データを入れる配列
-int DateData_Normal[128] = { 0 };	//普通の日付データを入れる配列
-int DateData_Hard[128] = { 0 };		//難しいの日付データを入れる配列
 int SaveNowCnt = 0;		//セーブデータが何個入っているかカウントする変数
 int SaveMaxNum = 0;		//セーブデータの中の最大値
 int SaveMinNum = 0;		//セーブデータの中の最小値
@@ -339,7 +334,6 @@ BOOL CHECK_RECT_ATARI(RECT, MOUSE);	//マウスが画像の領域内かどうか判断する関数
 VOID SET_SELECT_IMAGE(VOID);		//はいといいえの画像描画の設定をする関数
 VOID SET_START_IMAGE(VOID);			//スタート画面の設定をする関数
 VOID SET_ANSER_NUM(VOID);			//回答用の数字の設定をする関数
-VOID SET_GAME_LEVEL(int);			//ゲームレベルを設定する関数
 VOID GET_PLAYER_ANSER(int);			//プレイヤーの回答を取得する関数
 VOID SET_END_IMAGE(VOID);			//終了の選択肢の画像の設定をする関数
 VOID SET_END_SETU(VOID);			//説明で使用する小物（矢印など）の設定をする関数

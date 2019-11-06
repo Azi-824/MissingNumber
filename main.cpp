@@ -443,9 +443,6 @@ VOID MY_GAME_CHECK(VOID)
 		{
 			//セーブデータ削除の処理
 			DELETE_DATA(SaveData[0]);		//簡単、のデータ削除
-			DELETE_DATA(SaveData_Normal[0]);	//普通、のデータ削除
-			DELETE_DATA(SaveData_Hard[0]);		//難しい、のデータ削除
-
 			Delete_flg = FALSE;		//削除フラグをリセット
 			Yes_flg = FALSE;
 
@@ -1377,38 +1374,6 @@ VOID SET_ANSER_NUM(VOID)
 			Num_Image.Y,
 			RECT_YOKO_SIZE,
 			RECT_TATE_SIZE);	//領域をセット
-	}
-}
-
-//############ ゲームレベルを設定する関数 ############
-VOID SET_GAME_LEVEL(int num)
-{
-
-	Game_Level_Now = -1;	//ゲームレベルを-1で初期化
-
-	switch (num)
-	{
-	case (int)GAME_LEVEL_EASY:	//簡単の画像の領域内だった時
-		Game_Level_Now = GAME_LEVEL_EASY;	//ゲーム難易度を簡単に設定
-		GameSceneNow = (int)GAME_SCENE_SET;	//シーンを設定画面にする
-
-		break;
-
-	case (int)GAME_LEVEL_NORMAL: //普通の画像の領域内だった時
-		Game_Level_Now = GAME_LEVEL_NORMAL;	//ゲーム難易度を普通に設定
-		GameSceneNow = (int)GAME_SCENE_SET;	//シーンを設定画面にする
-
-		break;
-
-	case (int)GAME_LEVEL_HARD:	//難しいの画像の領域内だった時
-		Game_Level_Now = GAME_LEVEL_HARD;	//ゲーム難易度を難しいに設定
-		GameSceneNow = (int)GAME_SCENE_SET;	//シーンを設定画面にする
-
-		break;
-
-	default:
-		break;
-
 	}
 }
 
