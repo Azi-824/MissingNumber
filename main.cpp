@@ -1726,8 +1726,6 @@ VOID MOVE_QUESTION(GAZOU *g, RECT *rect)
 }
 
 //############## セーブデータを更新する関数 #####################
-//data:正解数
-//date:日付情報
 int WRITE_SAVEDATA(int data)
 {
 
@@ -1744,7 +1742,6 @@ int WRITE_SAVEDATA(int data)
 }
 
 //############## セーブデータを読み込む関数 #####################
-//data[]:得点
 int READ_SAVEDATA(SAVE data[])
 {
 	SaveNowCnt = 0;
@@ -1810,7 +1807,6 @@ VOID QUICK_SORT(SAVE array[], int left, int right)
 }
 
 //############## セーブデータを降順に並べ替える関数 #################
-//array[]:得点
 VOID SORT_SAVEDATA(SAVE array[])
 {
 	READ_SAVEDATA(array);	//セーブデータの読み込み
