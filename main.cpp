@@ -636,7 +636,7 @@ VOID MY_GAME_RANKING(VOID)
 	if (Sort_flg == FALSE)
 	{
 
-		SORT_SAVEDATA(SaveData);	//セーブデータを読み込んで、降順に並び替える
+		SORT_SAVEDATA(SaveData);		//セーブデータを読み込んで、降順に並び替える
 		Sort_flg = TRUE;				//ソートフラグを立てる
 	}
 
@@ -1249,12 +1249,12 @@ VOID DRAW_BACKIMAGE(GAZOU *back)
 }
 
 //########### ランキングを描画する関数 #################
-VOID DRAW_RANKING(int data,int cnt)
+VOID DRAW_RANKING(SAVE data,int cnt)
 {
 	int Font = CREATE_FONT(60);	//フォントハンドル作成
 	char Str_Ranking[128] = { 0 };
 
-	sprintf(&Str_Ranking[0], "%2d位:%2d問",cnt + 1,data);
+	sprintf(&Str_Ranking[0], "%2d位:%d年%d月%d日%2d問",cnt + 1,data.year,data.mounth,data.day,data.point);
 
 	int StrWidth = GetDrawFormatStringWidthToHandle(Font, &Str_Ranking[0]);	//デフォルトのフォントの横幅を取得
 
@@ -1726,36 +1726,38 @@ VOID MOVE_QUESTION(GAZOU *g, RECT *rect)
 }
 
 //############## セーブデータを更新する関数 #####################
+//data:正解数
+//date:日付情報
 int WRITE_SAVEDATA(int data)
 {
 
 	FILE *fp;
 
-	fp = fopen(DATA_EASY, "a");//バイナリファイルを開く
+	fp = fopen(SAVE_DATA, "a");//バイナリファイルを開く
 	if (fp == NULL) {//エラーが起きたら-1を返す
 		return -1;
 	}
-	fprintf(fp, "%d\n", data);
+	fprintf(fp, "%d,%d,%d,%d\n",Date.Year,Date.Mon,Date.Day, data);
 	fclose(fp);//ファイルを閉じる
 
 	return 0;
 }
 
 //############## セーブデータを読み込む関数 #####################
-//date[]:日付
 //data[]:得点
-int READ_SAVEDATA(int date[])
+int READ_SAVEDATA(SAVE data[])
 {
 	SaveNowCnt = 0;
 
 	FILE *fp;
 
-	fp = fopen(DATA_EASY, "r");
+	fp = fopen(SAVE_DATA, "r");
 	if (fp == NULL) {
 		return -1;	//エラーが発生したら、-1を返す
 	}
 
-	while (fscanf(fp, "%d", &date[SaveNowCnt]) != EOF)
+	while (fscanf(fp, "%d,%d,%d,%d", &data[SaveNowCnt].year, &data[SaveNowCnt].mounth, &data[SaveNowCnt].day, &data[SaveNowCnt].point)
+		!= EOF)
 	{
 		SaveNowCnt++;
 	}
@@ -1776,7 +1778,7 @@ VOID SWAP(int *x, int *y)
 }
 
 //############## pivotを決め、pivotを境目に振り分けする関数 ################
-int PARTITION(int array[], int left, int right)
+int PARTITION(SAVE array[], int left, int right)
 {
 	int i = 0, j = 0, pivot = 0;
 	i = left;
@@ -1784,19 +1786,19 @@ int PARTITION(int array[], int left, int right)
 	pivot = left;   // 先頭要素をpivotとする
 
 	do {
-		do { i++; } while (array[i] > array[pivot]);
-		do { j--; } while (array[pivot] > array[j]);
+		do { i++; } while (array[i].point > array[pivot].point);
+		do { j--; } while (array[pivot].point > array[j].point);
 		// pivotより小さいものを左へ、大きいものを右へ
-		if (i < j) { SWAP(&array[i], &array[j]); }
+		if (i < j) { SWAP(&array[i].point, &array[j].point); }
 	} while (i < j);
 
-	SWAP(&array[pivot], &array[j]);   //pivotを更新
+	SWAP(&array[pivot].point, &array[j].point);   //pivotを更新
 
 	return j;
 }
 
 //############## クイックソート関数 ##############################
-VOID QUICK_SORT(int array[], int left, int right)
+VOID QUICK_SORT(SAVE array[], int left, int right)
 {
 	int pivot;
 
@@ -1809,7 +1811,7 @@ VOID QUICK_SORT(int array[], int left, int right)
 
 //############## セーブデータを降順に並べ替える関数 #################
 //array[]:得点
-VOID SORT_SAVEDATA(int array[])
+VOID SORT_SAVEDATA(SAVE array[])
 {
 	READ_SAVEDATA(array);	//セーブデータの読み込み
 
@@ -1823,15 +1825,15 @@ VOID SORT_SAVEDATA(int array[])
 }
 
 //############ セーブデータの最大値を取得する関数 ################
-VOID SAVEDATA_MAX(int array[],int num)
+VOID SAVEDATA_MAX(SAVE array[],int num)
 {
 	int tempmax = 0;	//最大値を入れる変数
 
 	for (int cnt = 0; cnt < num; cnt++)
 	{
-		if (array[cnt] > tempmax)	//現在の最大値より大きかったら
+		if (array[cnt].point > tempmax)	//現在の最大値より大きかったら
 		{
-			tempmax = array[cnt];	//最大値更新
+			tempmax = array[cnt].point;	//最大値更新
 		}
 	}
 
@@ -1841,15 +1843,15 @@ VOID SAVEDATA_MAX(int array[],int num)
 }
 
 //############ セーブデータの最小値を取得する関数 ################
-VOID SAVEDATA_MIN(int array[],int num)
+VOID SAVEDATA_MIN(SAVE array[],int num)
 {
 	int tempmin = 0;	//最小値を入れる変数
 
 	for (int cnt = 0; cnt < num; cnt++)
 	{
-		if (array[cnt] < tempmin)	//現在の最小値より大きかったら
+		if (array[cnt].point < tempmin)	//現在の最小値より大きかったら
 		{
-			tempmin = array[cnt];	//最小値更新
+			tempmin = array[cnt].point;	//最小値更新
 		}
 	}
 
@@ -1859,11 +1861,11 @@ VOID SAVEDATA_MIN(int array[],int num)
 }
 
 //########### セーブデータを削除する関数 ####################
-int DELETE_DATA(int data)
+int DELETE_DATA(SAVE data)
 {
 	FILE *fp;
 
-	fp = fopen(DATA_EASY, "w");//バイナリファイルを開く
+	fp = fopen(SAVE_DATA, "w");//バイナリファイルを開く
 	if (fp == NULL) {//エラーが起きたら-1を返す
 		return -1;
 	}
@@ -1919,33 +1921,6 @@ VOID GET_DATEDATA()
 {
 	GetDateTime(&Date);		//日付取得
 	return;
-}
-
-//############# 読み込んだセーブデータを日付と、得点に分ける関数 ###############
-VOID DATA_BUNKATU(int date[], int point[])
-{
-	int work[POINT_MAX_KETA] = { 0 };	//作業用配列
-	int weight = 1;						//桁の重み
-
-	for (int cnt = 0; cnt < SaveNowCnt; cnt++)
-	{
-		//得点を取り出す処理
-		for (int i = 0; i < POINT_MAX_KETA; i++)
-		{
-			work[i] = (date[cnt] % 10);	//1桁目を取りだす
-			date[cnt] / 10;				//次の桁の準備
-		}
-		//取り出した得点を配列に格納する処理
-		for (int i = 0; i < POINT_MAX_KETA; i++)
-		{
-			point[cnt] += work[i] * weight;	//作業用配列から得点配列へ重みを付けて、格納
-			weight *= 10;					//重みを一桁分増やす
-		}
-
-	}
-
-	return;
-
 }
 
 //************ 問題レベルをランダムに設定する関数 *****************

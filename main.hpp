@@ -65,7 +65,7 @@
 
 #define MUSIC_BGM		"BGM\\cyber42.mp3"			//BGM
 
-#define DATA_EASY		"C:\\Missing Numbers_SAVE\\Save.dat"		//ƒZ[ƒuƒf[ƒ^
+#define SAVE_DATA		"C:\\Missing Numbers_SAVE\\Save.dat"		//ƒZ[ƒuƒf[ƒ^
 #define GAME_DATA		"C:\\Missing Numbers_SAVE"					//ƒZ[ƒuƒf[ƒ^‚ð“ü‚ê‚éƒtƒHƒ‹ƒ_‚ÌƒpƒX
 
 #define GAZOU_SPACE		50				//‰æ‘œ‚Æ‰æ‘œ‚ÌŠÔŠu
@@ -189,10 +189,18 @@ struct STRUCT_MUSIC
 	int Playtype;		//‰¹‚ÌÄ¶•û–@
 };	//‰¹\‘¢‘Ì
 
+struct STRUCT_SAVE {
+	int point;	//“¾“_
+	int year;	//”N
+	int mounth;	//ŒŽ
+	int day;	//“ú
+};	//ƒZ[ƒuƒf[ƒ^\‘¢‘Ì
+
 //****************–¼‘O‚ÌÄ’è‹`********************
 typedef STRUCT_GAZOU GAZOU;
 typedef STRUCT_MOUSE MOUSE;
 typedef STRUCT_MUSIC MUSIC;
+typedef STRUCT_SAVE SAVE;
 
 //########## ƒOƒ[ƒoƒ‹•Ï” ##########
 
@@ -275,10 +283,10 @@ MUSIC SE_COUNTDOWN;		//ƒJƒEƒ“ƒgƒ_ƒEƒ“‚ÌŽž‚ÌŒø‰Ê‰¹
 MUSIC BGM;				//BGM
 
 //ƒZ[ƒuƒf[ƒ^ŠÖ˜A
-int SaveData[128] = { 0 };		//ŠÈ’P‚ÌƒZ[ƒuƒf[ƒ^‚ð“ü‚ê‚é”z—ñ
-int SaveNowCnt = 0;		//ƒZ[ƒuƒf[ƒ^‚ª‰½ŒÂ“ü‚Á‚Ä‚¢‚é‚©ƒJƒEƒ“ƒg‚·‚é•Ï”
-int SaveMaxNum = 0;		//ƒZ[ƒuƒf[ƒ^‚Ì’†‚ÌÅ‘å’l
-int SaveMinNum = 0;		//ƒZ[ƒuƒf[ƒ^‚Ì’†‚ÌÅ¬’l
+SAVE SaveData[128] = { 0 };		//ƒZ[ƒuƒf[ƒ^‚ð“ü‚ê‚é”z—ñ
+int SaveNowCnt = 0;				//ƒZ[ƒuƒf[ƒ^‚ª‰½ŒÂ“ü‚Á‚Ä‚¢‚é‚©ƒJƒEƒ“ƒg‚·‚é•Ï”
+int SaveMaxNum = 0;				//ƒZ[ƒuƒf[ƒ^‚Ì’†‚ÌÅ‘å’l
+int SaveMinNum = 0;				//ƒZ[ƒuƒf[ƒ^‚Ì’†‚ÌÅ¬’l
 
 //########## ƒvƒƒgƒ^ƒCƒvéŒ¾ ##########
 //LRESULT CALLBACK MY_WNDPROC(HWND, UINT, WPARAM, LPARAM);	//Ž©ìƒEƒBƒ“ƒhƒEƒvƒƒV[ƒWƒƒ
@@ -313,7 +321,7 @@ VOID DRAW_RESULET(VOID);			//Œ‹‰Ê‚ð•`‰æ‚·‚éŠÖ”
 VOID DRAW_END_IMAGE(VOID);			//I—¹‚Ì‘I‘ðŽˆ‚ð•`‰æ‚·‚éŠÖ”
 VOID DRAW_BACKIMAGE(GAZOU *);		//Žw’è‚µ‚½”wŒi‰æ‘œ‚ð•`‰æ‚·‚éŠÖ”
 VOID DRAW_TIME(VOID);				//ŽžŠÔ‚ð•`‰æ‚·‚éŠÖ”
-VOID DRAW_RANKING(int, int);		//ƒ‰ƒ“ƒLƒ“ƒO‚ð•`‰æ‚·‚éŠÖ”
+VOID DRAW_RANKING(SAVE, int);		//ƒ‰ƒ“ƒLƒ“ƒO‚ð•`‰æ‚·‚éŠÖ”
 VOID DRAW_WAIT_TIME(int wait);		//‘Ò‚¿ŽžŠÔ‚ð•`‰æ‚·‚éŠÖ”
 VOID DRAW_SETU(VOID);				//à–¾Žž‚ÉŽg—p‚·‚é¬•¨i–îˆó‚È‚Çj‚ð•`‰æ‚·‚éŠÖ”
 
@@ -340,16 +348,15 @@ BOOL CHECK_SELECT(int num);				//‚Í‚¢‚©‚¢‚¢‚¦‚©”»’è‚·‚éŠÖ”A‚Í‚¢‚Ìê‡ATRUE‚ð•
 VOID MOVE_QUESTION(GAZOU *, RECT *);	//–â‘è‚Ì•`‰æˆÊ’u‚ðˆÚ“®‚³‚¹‚éŠÖ”
 
 int WRITE_SAVEDATA(int);				//ƒZ[ƒuƒf[ƒ^‚ð‘‚«ž‚ÞŠÖ”
-int READ_SAVEDATA(int[]);				//ƒZ[ƒuƒf[ƒ^‚ð“Ç‚Ýž‚ÞŠÖ”
-VOID SAVEDATA_MAX(int[], int);			//ƒZ[ƒuƒf[ƒ^‚ÌÅ‘å’l‚ðŽæ“¾‚·‚éŠÖ”
-VOID SAVEDATA_MIN(int[], int);			//ƒZ[ƒuƒf[ƒ^‚ÌÅ¬’l‚ðŽæ“¾‚·‚éŠÖ”
-int DELETE_DATA(int);					//ƒZ[ƒuƒf[ƒ^íœŠÖ”
-VOID DATA_BUNKATU(int[], int[]);		//“Ç‚Ýž‚ñ‚¾ƒZ[ƒuƒf[ƒ^‚ð“ú•t‚Æ“¾“_‚É•ªŠ„‚·‚éŠÖ”
+int READ_SAVEDATA(SAVE[]);				//ƒZ[ƒuƒf[ƒ^‚ð“Ç‚Ýž‚ÞŠÖ”
+VOID SAVEDATA_MAX(SAVE[], int);			//ƒZ[ƒuƒf[ƒ^‚ÌÅ‘å’l‚ðŽæ“¾‚·‚éŠÖ”
+VOID SAVEDATA_MIN(SAVE[], int);			//ƒZ[ƒuƒf[ƒ^‚ÌÅ¬’l‚ðŽæ“¾‚·‚éŠÖ”
+int DELETE_DATA(SAVE);					//ƒZ[ƒuƒf[ƒ^íœŠÖ”
 
 VOID SWAP(int *, int*);					//’l‚ð“ü‚ê‘Ö‚¦‚éŠÖ”
-int PARTITION(int[], int, int);			//pivot‚ðŒˆ‚ßApivot‚ð‹«–Ú‚ÉU‚è•ª‚¯‚·‚éŠÖ”
-VOID QUICK_SORT(int[], int, int);		//ƒNƒCƒbƒNƒ\[ƒgŠÖ”
-VOID SORT_SAVEDATA(int[]);				//ƒZ[ƒuƒf[ƒ^‚ð~‡‚É•À‚×‘Ö‚¦‚éŠÖ”
+int PARTITION(SAVE[], int, int);			//pivot‚ðŒˆ‚ßApivot‚ð‹«–Ú‚ÉU‚è•ª‚¯‚·‚éŠÖ”
+VOID QUICK_SORT(SAVE[], int, int);		//ƒNƒCƒbƒNƒ\[ƒgŠÖ”
+VOID SORT_SAVEDATA(SAVE[]);				//ƒZ[ƒuƒf[ƒ^‚ð~‡‚É•À‚×‘Ö‚¦‚éŠÖ”
 
 VOID GET_DATEDATA();					//“ú•t‚ðŽæ“¾‚·‚éŠÖ”
 
