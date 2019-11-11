@@ -24,10 +24,6 @@
 
 #define POINT_MAX_KETA	2	//データの得点のMAX桁数
 
-#define EASY_IMAGE		"LEVELIMAGE\\easy.png"		//難易度簡単の画像
-#define NORMAL_IMAGE	"LEVELIMAGE\\normal.png"	//難易度普通の画像
-#define HARD_IMAGE		"LEVELIMAGE\\hard.png"		//難易度難しいの画像
-
 #define ZERO_IMAGE		"NUMBER\\zero.png"			//0の画像
 #define ONE_IMAGE		"NUMBER\\one.png"			//1の画像
 #define TWO_IMAGE		"NUMBER\\two.png"			//2の画像
@@ -220,7 +216,6 @@ int Q_Sum = 0;										//答えた問題の合計数
 int Speed = 1;										//問題の移動速度
 
 //画像関連
-GAZOU GameLevel_Image[LEVEL_KIND];					//難易度選択用の画像
 GAZOU Number_Image[NUMBER_KIND];					//数の画像
 GAZOU Num_Image;									//回答用の数字の画像
 GAZOU End_Image[END_KIND];							//終了の選択肢の画像
@@ -234,7 +229,6 @@ int BackImageNow = BACKIMAGE_TITLE;					//現在の背景画像の種類
 int Setu_Now = BACKIMAGE_SETULEVEL;					//現在の説明段階
 
 //領域関連
-RECT Level_Image_rect[LEVEL_KIND];					//難易度画像の領域
 RECT Q_rect[QUESTION_KAZU];							//問題の領域
 RECT A_num[RECT_CNT];								//回答の選択肢の領域
 RECT End_rect[END_KIND];							//終了の選択肢の領域
@@ -319,7 +313,7 @@ VOID DRAW_RESULET(VOID);			//結果を描画する関数
 VOID DRAW_END_IMAGE(VOID);			//終了の選択肢を描画する関数
 VOID DRAW_BACKIMAGE(GAZOU *);		//指定した背景画像を描画する関数
 VOID DRAW_TIME(VOID);				//時間を描画する関数
-VOID DRAW_RANKING(int, int);			//ランキングを描画する関数
+VOID DRAW_RANKING(int, int);		//ランキングを描画する関数
 VOID DRAW_WAIT_TIME(int wait);		//待ち時間を描画する関数
 VOID DRAW_SETU(VOID);				//説明時に使用する小物（矢印など）を描画する関数
 

@@ -27,11 +27,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetDrawScreen(DX_SCREEN_BACK);								//Draw系関数は裏画面に描画
 
 	//▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ 画像の読み込み ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-	//難易度画像の読み込み
-	if (MY_GAZOU_LOAD(&GameLevel_Image[0], 0, 0, EASY_IMAGE) == FALSE) { MessageBox(NULL, EASY_IMAGE, "NotFound", MB_OK); return -1; }	//難易度画像を読み込む
-	if (MY_GAZOU_LOAD(&GameLevel_Image[1], 0, 0, NORMAL_IMAGE) == FALSE) { MessageBox(NULL, NORMAL_IMAGE, "NotFound", MB_OK); return -1; }	//難易度画像を読み込む
-	if (MY_GAZOU_LOAD(&GameLevel_Image[2], 0, 0, HARD_IMAGE) == FALSE) { MessageBox(NULL, HARD_IMAGE, "NotFound", MB_OK); return -1; }	//難易度画像を読み込む
-
 	//問題用の数字画像の読み込み
 	if (MY_GAZOU_LOAD(&Number_Image[0], 0, 0, ZERO_IMAGE) == FALSE) { MessageBox(NULL, ZERO_IMAGE, "NotFound", MB_OK); return -1; }	//数の画像を読み込む
 	if (MY_GAZOU_LOAD(&Number_Image[1], 0, 0, ONE_IMAGE) == FALSE) { MessageBox(NULL, ONE_IMAGE, "NotFound", MB_OK); return -1; }	//数の画像を読み込む
@@ -159,11 +154,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 
 	//▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ 画像のハンドルの削除 ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-	for (int cnt = 0; cnt < LEVEL_KIND; cnt++)
-	{
-		DeleteGraph(GameLevel_Image[cnt].Handle);	//難易度画像のハンドルを削除
-	}
-
 	for (int cnt = 0; cnt < NUMBER_KIND; cnt++)
 	{
 		DeleteGraph(Number_Image[cnt].Handle);		//数の画像のハンドルを削除
@@ -865,11 +855,6 @@ BOOL MY_INIT(VOID)
 		Number_Image[cnt].Y = 0;
 	}
 
-	for (int cnt = 0; cnt < LEVEL_KIND; cnt++)
-	{
-		RECT_RESET(&Level_Image_rect[cnt]);
-	}
-
 	RESET_MOUSE_DATE();		//マウス情報をリセット
 
 	Q_Sum = 0;		//問題数を初期化
@@ -950,29 +935,6 @@ VOID GET_PLAYER_ANSER(int num)
 
 	return;
 
-}
-
-//############ 難易度の画像を描画する関数 ############
-VOID GAMELEVEL_IMAGE_DRAW(VOID)
-{
-	//画像の位置調節
-	GameLevel_Image[GAME_LEVEL_EASY].X = GAZOU_SPACE * 1.5;
-	GameLevel_Image[GAME_LEVEL_EASY].Y = 400;										    		
-	GameLevel_Image[GAME_LEVEL_NORMAL].X = GameLevel_Image[GAME_LEVEL_EASY].X + GameLevel_Image[GAME_LEVEL_EASY].Width + GAZOU_SPACE;
-	GameLevel_Image[GAME_LEVEL_NORMAL].Y = 400;
-	GameLevel_Image[GAME_LEVEL_HARD].X = GameLevel_Image[GAME_LEVEL_NORMAL].X + GameLevel_Image[GAME_LEVEL_NORMAL].Width + GAZOU_SPACE;
-	GameLevel_Image[GAME_LEVEL_HARD].Y = 400;
-
-	for (int num = 0; num < LEVEL_KIND; num++)
-	{
-		DrawGraph(
-			GameLevel_Image[num].X,
-			GameLevel_Image[num].Y,
-			GameLevel_Image[num].Handle, FALSE);	//画像描画
-
-	}
-
-	return;
 }
 
 //############ 領域の設定をする関数 ############
