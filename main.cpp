@@ -70,6 +70,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	if (MY_GAZOU_LOAD(&Setu_Image, 0, 0, SETUMEI_NEXT) == FALSE) { MessageBox(NULL, SETUMEI_NEXT, "NotFound", MB_OK); return -1; }	//終了の選択肢画像を読み込む
 
 
+	//途中でやめるの画像
+	if (MY_GAZOU_LOAD(&Retire_Image, 0, 0, RETIRE_IMAGE) == FALSE) { MessageBox(NULL, RETIRE_IMAGE, "NotFound", MB_OK); return -1; }	//やめるの画像を読み込む
+
 	//▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ 画像の読み込み ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
 
 
@@ -191,6 +194,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	DeleteGraph(Setu_Image.Handle);		//説明画面で使用する小物の画像のハンドルを削除
 	DeleteGraph(Title_Image.Handle);	//タイトルの選択肢画像のハンドルを削除
+	
+	DeleteGraph(Retire_Image.Handle);	//やめるの画像のハンドルを削除
+
 	//▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ 画像のハンドルの削除 ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
 
 
@@ -374,7 +380,7 @@ VOID MY_GAME_CHECK(VOID)
 		DeleteFontToHandle(Font);	//フォントハンドル削除
 
 	}
-	else if (End_flg == TRUE) 
+	else if (End_flg == TRUE || Retire_flg == TRUE)
 	{
 		int Font = CREATE_FONT(64);	//フォントハンドル作成
 		char Str_Time[128] = { 0 };
@@ -460,6 +466,11 @@ VOID MY_GAME_CHECK(VOID)
 			No_flg = FALSE;
 			GameSceneNow = (int)GAME_SCENE_SETUMEI;	//説明画面にする
 		}
+	 else if (Retire_flg == TRUE)	//リタイアフラグが立っていたら
+	 {
+		 GameSceneNow = (int)GAME_SCENE_PLAY;//ゲームシーンをプレイ画面に変える
+		 No_flg = FALSE;
+	 }
 	 else
 	 {
 		 GameSceneNow = (int)GAME_SCENE_TITLE;//ゲームシーンをタイトル画面に変える
@@ -512,6 +523,8 @@ VOID MY_GAME_SET(VOID)
 		DRAW_TIME();			//残り時間の描画
 
 		DRAW_ANSER_NUM();		//回答用の選択肢を描画
+
+		Draw_Retire();			//「やめる」の描画
 	}
 
 	GameSceneNow = (int)GAME_SCENE_PLAY;	//プレイ画面にする
@@ -565,6 +578,20 @@ VOID MY_GAME_PLAY(VOID)
 		DRAW_QUESTION();		//問題を描画
 
 		DRAW_TIME();			//残り時間の描画
+
+		
+
+		//GET_MOUSE_STATE(&Retire_rect, 1);	//マウスの情報を取得(やめるの画像内か)
+
+		//「やめる」をクリックされた時
+		if (Mouse_Date.Mouse_LeftClick_flg == TRUE &&
+			Mouse_Date.Mouse_hover_flg == TRUE)
+		{
+			Retire_flg = TRUE;						//リタイアフラグ
+			GameSceneNow = (int)GAME_SCENE_CHECK;	//確認画面へ変更
+		}
+
+		RESET_MOUSE_DATE();	//マウス情報リセット
 
 		GET_MOUSE_STATE(&A_num[0], RECT_CNT);	//マウスの情報を取得
 
@@ -1265,6 +1292,29 @@ VOID DRAW_RANKING(SAVE data,int cnt)
 		Font);	//ランキングの描画
 
 	DeleteFontToHandle(Font);	//フォントハンドル削除
+}
+
+//########### やめるの画像を描画する関数 ###############
+VOID Draw_Retire()
+{
+
+	//描画位置設定
+	Retire_Image.X = GAME_WIDTH - Retire_Image.Width;	//右端に設定
+
+	//領域再設定
+	RECT_SETTING(&Retire_rect,
+		Retire_Image.X,
+		Retire_Image.Y,
+		Retire_Image.Width,
+		Retire_Image.Height);
+
+
+	//画像描画
+	DrawGraph(
+		Retire_Image.X,
+		Retire_Image.Y,
+		Retire_Image.Handle, FALSE);	//画像描画
+
 }
 
 //########### スタートの画像の設定をする関数 ##########

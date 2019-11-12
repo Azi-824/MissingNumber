@@ -56,6 +56,8 @@
 #define SETUMEI_PLAYIMAGE	"SETUMEI\\play_image.png"		//プレイ画面の説明画像
 #define SETUMEI_NEXT		"SETUMEI\\next.png"				//矢印の画像
 
+#define RETIRE_IMAGE	"RETIREIMAGE\\retire.png"			//途中でやめるの画像
+
 
 #define MUSIC_SE_TRUE	"SE\\true.mp3"				//正解した時の効果音
 #define MUSIC_SE_FALSE	"SE\\false.mp3"				//不正解だった時の効果音
@@ -233,6 +235,7 @@ GAZOU Select_Image[SELECT_KIND];					//選択肢の画像（はい、いいえ）
 GAZOU Setumei_Image[SETUMEI_KIND];					//説明画面で使用する画像
 GAZOU Setu_Image;									//説明画面の小物画像(矢印など)
 GAZOU Title_Image;									//タイトルの画像
+GAZOU Retire_Image;									//途中でやめるの画像
 int BackImageNow = BACKIMAGE_TITLE;					//現在の背景画像の種類
 int Setu_Now = BACKIMAGE_SETULEVEL;					//現在の説明段階
 
@@ -243,6 +246,7 @@ RECT End_rect[END_KIND];							//終了の選択肢の領域
 RECT Start_rect[START_KIND];						//スタートの選択肢の領域
 RECT Select_rect[SELECT_KIND];						//選択肢の領域（はい、いいえ)
 RECT Setu_rect;										//説明画面の小物画像(矢印など)の領域
+RECT Retire_rect;									//途中でやめるの領域
 
 //難易度関連
 int Game_Level_Now;									//現在のゲームの難易度を入れる変数
@@ -264,6 +268,7 @@ BOOL Delete_flg = FALSE;							//セーブデータ削除フラグ
 BOOL WaitTime_flg = FALSE;							//時間を待つためのフラグ
 BOOL First_flg = TRUE;								//最初の問題
 BOOL CountDownStart_flg = FALSE;					//カウントダウンスタートのフラグ
+BOOL Retire_flg = FALSE;							//リタイアフラグ
 
 
 //時間関連
@@ -324,6 +329,7 @@ VOID DRAW_TIME(VOID);				//時間を描画する関数
 VOID DRAW_RANKING(SAVE, int);		//ランキングを描画する関数
 VOID DRAW_WAIT_TIME(int wait);		//待ち時間を描画する関数
 VOID DRAW_SETU(VOID);				//説明時に使用する小物（矢印など）を描画する関数
+VOID Draw_Retire();					//やめるの画像を描画する関数
 
 VOID RECT_SETTING(RECT *, int, int, int, int);	//領域を設定する関数
 VOID RECT_RESET(RECT *);						//領域を初期化する関数
