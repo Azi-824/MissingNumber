@@ -579,9 +579,9 @@ VOID MY_GAME_PLAY(VOID)
 
 		DRAW_TIME();			//残り時間の描画
 
-		
+		Draw_Retire();			//「やめる」の描画
 
-		//GET_MOUSE_STATE(&Retire_rect, 1);	//マウスの情報を取得(やめるの画像内か)
+		GET_MOUSE_STATE(&Retire_rect, 1);	//マウスの情報を取得(やめるの画像内か)
 
 		//「やめる」をクリックされた時
 		if (Mouse_Date.Mouse_LeftClick_flg == TRUE &&
