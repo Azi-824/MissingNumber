@@ -469,6 +469,9 @@ VOID MY_GAME_CHECK(VOID)
 	 else if (Retire_flg == TRUE)	//リタイアフラグが立っていたら
 	 {
 		 GameSceneNow = (int)GAME_SCENE_PLAY;//ゲームシーンをプレイ画面に変える
+		 LostTimeEnd = GetNowCount();			//中断時間をカウント終了
+		 LostTime = LostTimeEnd - LostTimeStart;	//中断時間を計算
+		 StartTime += LostTime;					//中断していた時間をプラスする
 		 No_flg = FALSE;
 	 }
 	 else
@@ -591,8 +594,9 @@ VOID MY_GAME_PLAY(VOID)
 			if (Mouse_Date.Mouse_LeftClick_flg == TRUE &&
 				Mouse_Date.Mouse_hover_flg == TRUE)
 			{
-				Retire_flg = TRUE;						//リタイアフラグ
-				GameSceneNow = (int)GAME_SCENE_CHECK;	//確認画面へ変更
+				Retire_flg = TRUE;							//リタイアフラグ
+				LostTimeStart = GetNowCount();			//中断時間をカウントスタート
+				GameSceneNow = (int)GAME_SCENE_CHECK;		//確認画面へ変更
 			}
 		}
 

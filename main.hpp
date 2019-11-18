@@ -274,6 +274,9 @@ BOOL Retire_flg = FALSE;							//リタイアフラグ
 //時間関連
 double StartTime = 0;	//計測開始時間
 double NokoriTime = 0;	//残り時間
+double LostTimeStart = 0;//中断し始めた時間
+double LostTimeEnd = 0;	//中断し終わった時間
+double LostTime = 0;	//中断していた時間
 int Time_Draw_X = 300;	//時間表示のX座標
 int Time_Draw_Y = 0;	//時間表示のY座標
 int LimitTime = 30;		//制限時間
