@@ -581,15 +581,22 @@ VOID MY_GAME_PLAY(VOID)
 
 		Draw_Retire();			//「やめる」の描画
 
-		GET_MOUSE_STATE(&Retire_rect, 1);	//マウスの情報を取得(やめるの画像内か)
+		GetMousePoint(&Mouse_Date.X, &Mouse_Date.Y);	//マウスの座標を取得
+
+		if (Mouse_Date.Y < GAME_HEIGHT / 3)			//マウスの座標が画面の1/3より上だったら
+		{
+			GET_MOUSE_STATE(&Retire_rect, 1);	//マウスの情報を取得(やめるの画像内か)
 
 		//「やめる」をクリックされた時
-		if (Mouse_Date.Mouse_LeftClick_flg == TRUE &&
-			Mouse_Date.Mouse_hover_flg == TRUE)
-		{
-			Retire_flg = TRUE;						//リタイアフラグ
-			GameSceneNow = (int)GAME_SCENE_CHECK;	//確認画面へ変更
+			if (Mouse_Date.Mouse_LeftClick_flg == TRUE &&
+				Mouse_Date.Mouse_hover_flg == TRUE)
+			{
+				Retire_flg = TRUE;						//リタイアフラグ
+				GameSceneNow = (int)GAME_SCENE_CHECK;	//確認画面へ変更
+			}
 		}
+
+		
 
 		RESET_MOUSE_DATE();	//マウス情報リセット
 
