@@ -872,6 +872,8 @@ VOID MY_CREATE_QUESTION(VOID)
 		if (Number_Image[num].Num_flg != TRUE)		//–â‘è—p‚Ì”z—ñ‚É—”‚Å¶¬‚µ‚½”š‚ª“ü‚Á‚Ä‚¢‚È‚©‚Á‚½ê‡
 		{
 			Number_Image[num].Num_flg = TRUE;		//ƒtƒ‰ƒO‚ğ—§‚Ä‚é
+			int num2 = GetRand(REVERSE_TYPE);		//0,1‚Ì‚Ç‚¿‚ç‚©‚Å—”‚ğ¶¬
+			Number_Image[num].Reverse_flg = num2;	//”½“]‚³‚¹‚é‚©‚Ç‚¤‚©
 			cnt++;								//cnt‚ğƒCƒ“ƒNƒŠƒƒ“ƒg
 		}
 		
@@ -1198,6 +1200,9 @@ VOID DRAW_QUESTION(VOID)
 			{
 			case GAME_LEVEL_EASY:	//“ïˆÕ“x‚©‚ñ‚½‚ñ‚Ìˆ—
 
+				if(Number_Image[cnt].Reverse_flg)	//”½“]ƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚é‚Æ‚«
+					DrawTurnGraph(Number_Image[cnt].X, Number_Image[cnt].Y, Number_Image[cnt].Handle, TRUE); //¶‰E”½“]•`‰æ
+				else
 				DrawGraph(Number_Image[cnt].X, Number_Image[cnt].Y, Number_Image[cnt].Handle, TRUE);	//–â‘è‚ğ•`‰æ
 				
 				break;
@@ -1227,7 +1232,10 @@ VOID DRAW_QUESTION(VOID)
 
 				MOVE_QUESTION(&Number_Image[cnt], &Q_rect[cnt]);	//–â‘è‚Ì•`‰æˆÊ’u‚ğˆÚ“®
 
-				DrawGraph(Number_Image[cnt].X, Number_Image[cnt].Y, Number_Image[cnt].Handle, TRUE);	//–â‘è‚ğˆÚ“®‚³‚¹‚È‚ª‚ç•`‰æ
+				if (Number_Image[cnt].Reverse_flg)	//”½“]ƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚é‚Æ‚«
+					DrawTurnGraph(Number_Image[cnt].X, Number_Image[cnt].Y, Number_Image[cnt].Handle, TRUE); //¶‰E”½“]•`‰æ
+				else
+					DrawGraph(Number_Image[cnt].X, Number_Image[cnt].Y, Number_Image[cnt].Handle, TRUE);	//–â‘è‚ğ•`‰æ
 
 				break;
 			}

@@ -100,6 +100,8 @@
 
 #define GAMETIME 30						//ゲームの制限時間
 
+#define REVERSE_TYPE 1					//反転させるかどうかをフラグで使用する際につかう
+
 
 
 //########## 列挙型 ##########
@@ -172,6 +174,7 @@ struct STRUCT_GAZOU {
 	int Direction;			//画像の移動向き
 	BOOL Num_flg;			//数字用フラグ
 	BOOL Positon_flg;		//座標設定完了用フラグ
+	BOOL Reverse_flg;		//左右反転フラグ
 };
 
 struct STRUCT_MOUSE {
