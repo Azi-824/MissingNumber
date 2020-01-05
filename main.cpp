@@ -874,6 +874,7 @@ VOID MY_CREATE_QUESTION(VOID)
 			Number_Image[num].Num_flg = TRUE;		//フラグを立てる
 			int num2 = GetRand(REVERSE_TYPE);		//0,1のどちらかで乱数を生成
 			Number_Image[num].Reverse_flg = num2;	//反転させるかどうか
+			Number_Image[num].Color = GetRand(360);	//色をランダムで決定
 			cnt++;								//cntをインクリメント
 		}
 		
@@ -1200,10 +1201,15 @@ VOID DRAW_QUESTION(VOID)
 			{
 			case GAME_LEVEL_EASY:	//難易度かんたんの処理
 
-				if(Number_Image[cnt].Reverse_flg)	//反転フラグが立っているとき
+				if (Number_Image[cnt].Reverse_flg)	//反転フラグが立っているとき
+				{
 					DrawTurnGraph(Number_Image[cnt].X, Number_Image[cnt].Y, Number_Image[cnt].Handle, TRUE); //左右反転描画
+				}
 				else
-				DrawGraph(Number_Image[cnt].X, Number_Image[cnt].Y, Number_Image[cnt].Handle, TRUE);	//問題を描画
+				{
+					CHENGE_COLOR(Number_Image[cnt].Handle,Number_Image[cnt].Color);			//色変更
+					DrawGraph(Number_Image[cnt].X, Number_Image[cnt].Y, Number_Image[cnt].Handle, TRUE);	//問題を描画
+				}
 				
 				break;
 
@@ -1998,5 +2004,21 @@ VOID SetLevel()
 	Game_Level_Now = rand;		//生成した乱数を現在のゲームレベルに設定
 
 	return;
+
+}
+
+//*********** 描画色を変更する関数 ********************
+BOOL CHENGE_COLOR(int handle,int color)
+{
+
+	if (GraphFilter(handle,DX_GRAPH_FILTER_HSB,1, color,0,0)==0)	//色を変更
+	{
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
+
 
 }

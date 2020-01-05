@@ -175,6 +175,7 @@ struct STRUCT_GAZOU {
 	BOOL Num_flg;			//数字用フラグ
 	BOOL Positon_flg;		//座標設定完了用フラグ
 	BOOL Reverse_flg;		//左右反転フラグ
+	int Color;				//色
 };
 
 struct STRUCT_MOUSE {
@@ -371,4 +372,6 @@ VOID QUICK_SORT(SAVE[], int, int);		//クイックソート関数
 VOID SORT_SAVEDATA(SAVE[]);				//セーブデータを降順に並べ替える関数
 
 VOID GET_DATEDATA();					//日付を取得する関数
+
+BOOL CHENGE_COLOR(int,int);					//描画色を変更する関数
 
