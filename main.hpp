@@ -176,6 +176,7 @@ struct STRUCT_GAZOU {
 	BOOL Positon_flg;		//座標設定完了用フラグ
 	BOOL Reverse_flg;		//左右反転フラグ
 	BOOL IsDraw;			//描画してよいか
+	BOOL SetIsDraw_flg;		//描画してよいかを設定したか
 	int Color;				//色
 };
 
@@ -282,6 +283,8 @@ double NokoriTime = 0;	//残り時間
 double LostTimeStart = 0;//中断し始めた時間
 double LostTimeEnd = 0;	//中断し終わった時間
 double LostTime = 0;	//中断していた時間
+double DrawTime = 0;	//描画している時間
+double DrawStartTime = 0;	//描画開始時間
 int Time_Draw_X = 300;	//時間表示のX座標
 int Time_Draw_Y = 0;	//時間表示のY座標
 int LimitTime = 30;		//制限時間

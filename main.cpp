@@ -493,6 +493,8 @@ VOID MY_GAME_SET(VOID)
 	{
 		Number_Image[cnt].Num_flg = FALSE;	//問題が入っているかどうかのフラグを初期化
 		Number_Image[cnt].Positon_flg = FALSE;
+		Number_Image[cnt].IsDraw = TRUE;
+		Number_Image[cnt].SetIsDraw_flg = FALSE;
 		Number_Image[cnt].X = 0;
 		Number_Image[cnt].Y = 0;
 	}
@@ -505,6 +507,10 @@ VOID MY_GAME_SET(VOID)
 
 	True_flg = FALSE;	//正解フラグをリセット
 	False_flg = FALSE;	//不正解フラグをリセット
+
+	DrawTime = 0;		//描画時間0秒
+
+	DrawStartTime = GetNowCount();	//描画開始時間取得
 
 	if (Q_Sum == 0)	//最初の処理の時だけ、計測開始時間を設定
 	{
@@ -895,6 +901,7 @@ BOOL MY_INIT(VOID)
 		Number_Image[cnt].Num_flg = FALSE;	//問題が入っているかどうかのフラグを初期化
 		Number_Image[cnt].Positon_flg = FALSE;
 		Number_Image[cnt].IsDraw = FALSE;	//最初は描画してはいけない
+		Number_Image[cnt].SetIsDraw_flg = FALSE;
 		Number_Image[cnt].X = 0;
 		Number_Image[cnt].Y = 0;
 	}
@@ -1196,6 +1203,8 @@ VOID DRAW_QUESTION(VOID)
 {
 	int rote = 1;	//回転角度
 
+	DrawTime = (GetNowCount() - DrawStartTime) / 1000;	//描画時間の更新
+
 	for (int cnt = 0; cnt < QUESTION_KAZU; cnt++)
 	{
 		if (Number_Image[cnt].Num_flg == TRUE)
@@ -1203,6 +1212,27 @@ VOID DRAW_QUESTION(VOID)
 			switch (Game_Level_Now)
 			{
 			case GAME_LEVEL_EASY:	//難易度かんたんの処理
+
+				if (DrawTime >= 2 &&(int)DrawTime % 2 ==0)		//2秒置きに
+				{
+					if (Number_Image[cnt].SetIsDraw_flg == FALSE)		//描画設定完了してないときは
+					{
+						if (Number_Image[cnt].IsDraw)	//描画してよい時
+						{
+							Number_Image[cnt].IsDraw = FALSE;	//描画してはいけない
+							Number_Image[cnt].SetIsDraw_flg = TRUE;	//設定完了
+						}
+						else
+						{
+							Number_Image[cnt].IsDraw = TRUE;	//描画してよい
+							Number_Image[cnt].SetIsDraw_flg = TRUE;	//設定完了
+						}
+					}
+				}
+				else
+				{
+					Number_Image[cnt].SetIsDraw_flg = FALSE;	//設定完了してない
+				}
 
 				if (Number_Image[cnt].IsDraw)		//描画してよい時
 				{
