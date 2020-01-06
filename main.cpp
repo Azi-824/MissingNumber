@@ -874,7 +874,9 @@ VOID MY_CREATE_QUESTION(VOID)
 			Number_Image[num].Num_flg = TRUE;		//ƒtƒ‰ƒO‚ğ—§‚Ä‚é
 			int num2 = GetRand(REVERSE_TYPE);		//0,1‚Ì‚Ç‚¿‚ç‚©‚Å—”‚ğ¶¬
 			Number_Image[num].Reverse_flg = num2;	//”½“]‚³‚¹‚é‚©‚Ç‚¤‚©
-			CHENGE_COLOR(Number_Image[num].Handle, GetRand(360));//F•ÏX
+			Number_Image[num].Color = GetRand(360);	//Fİ’è
+			CHENGE_COLOR(Number_Image[num].Handle,Number_Image[num].Color);//F•ÏX
+			Number_Image[num].IsDraw = TRUE;		//•`‰æ‚µ‚Ä‚æ‚¢
 			cnt++;								//cnt‚ğƒCƒ“ƒNƒŠƒƒ“ƒg
 		}
 		
@@ -892,6 +894,7 @@ BOOL MY_INIT(VOID)
 	{
 		Number_Image[cnt].Num_flg = FALSE;	//–â‘è‚ª“ü‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©‚Ìƒtƒ‰ƒO‚ğ‰Šú‰»
 		Number_Image[cnt].Positon_flg = FALSE;
+		Number_Image[cnt].IsDraw = FALSE;	//Å‰‚Í•`‰æ‚µ‚Ä‚Í‚¢‚¯‚È‚¢
 		Number_Image[cnt].X = 0;
 		Number_Image[cnt].Y = 0;
 	}
@@ -1201,15 +1204,18 @@ VOID DRAW_QUESTION(VOID)
 			{
 			case GAME_LEVEL_EASY:	//“ïˆÕ“x‚©‚ñ‚½‚ñ‚Ìˆ—
 
-				if (Number_Image[cnt].Reverse_flg)	//”½“]ƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚é‚Æ‚«
+				if (Number_Image[cnt].IsDraw)		//•`‰æ‚µ‚Ä‚æ‚¢
 				{
-					DrawTurnGraph(Number_Image[cnt].X, Number_Image[cnt].Y, Number_Image[cnt].Handle, TRUE); //¶‰E”½“]•`‰æ
+					if (Number_Image[cnt].Reverse_flg)	//”½“]ƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚é‚Æ‚«
+					{
+						DrawTurnGraph(Number_Image[cnt].X, Number_Image[cnt].Y, Number_Image[cnt].Handle, TRUE); //¶‰E”½“]•`‰æ
+					}
+					else
+					{
+						DrawGraph(Number_Image[cnt].X, Number_Image[cnt].Y, Number_Image[cnt].Handle, TRUE);	//–â‘è‚ğ•`‰æ
+					}
 				}
-				else
-				{
-					DrawGraph(Number_Image[cnt].X, Number_Image[cnt].Y, Number_Image[cnt].Handle, TRUE);	//–â‘è‚ğ•`‰æ
-				}
-				
+
 				break;
 
 			case GAME_LEVEL_NORMAL:	//“ïˆÕ“x•’Ê‚Ìˆ—
@@ -1224,23 +1230,30 @@ VOID DRAW_QUESTION(VOID)
 					rote = -cnt + 2;		//¶‰ñ“]
 				}
 
-				//Šp“x‚ğ•Ï‚¦‚Ä•`‰æ
-				DrawRotaGraph(Number_Image[cnt].X + Number_Image[cnt].C_Width,
-					Number_Image[cnt].Y + Number_Image[cnt].C_Height,
-					EXPANSION,	//Šg‘å—¦
-					PI/ rote,	//‰ñ“]Šp“x
-					Number_Image[cnt].Handle, TRUE);
+				if (Number_Image[cnt].IsDraw)		//•`‰æ‚µ‚Ä‚æ‚¢
+				{
+					//Šp“x‚ğ•Ï‚¦‚Ä•`‰æ
+					DrawRotaGraph(Number_Image[cnt].X + Number_Image[cnt].C_Width,
+						Number_Image[cnt].Y + Number_Image[cnt].C_Height,
+						EXPANSION,	//Šg‘å—¦
+						PI / rote,	//‰ñ“]Šp“x
+						Number_Image[cnt].Handle, TRUE);
+				}
 
 			break;
 
 			case GAME_LEVEL_HARD: //“ïˆÕ“x“ï‚µ‚¢‚Ìˆ—
 
-				MOVE_QUESTION(&Number_Image[cnt], &Q_rect[cnt]);	//–â‘è‚Ì•`‰æˆÊ’u‚ğˆÚ“®
+				if (Number_Image[cnt].IsDraw)		//•`‰æ‚µ‚Ä‚æ‚¢
+				{
+					MOVE_QUESTION(&Number_Image[cnt], &Q_rect[cnt]);	//–â‘è‚Ì•`‰æˆÊ’u‚ğˆÚ“®
 
-				if (Number_Image[cnt].Reverse_flg)	//”½“]ƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚é‚Æ‚«
-					DrawTurnGraph(Number_Image[cnt].X, Number_Image[cnt].Y, Number_Image[cnt].Handle, TRUE); //¶‰E”½“]•`‰æ
-				else
-					DrawGraph(Number_Image[cnt].X, Number_Image[cnt].Y, Number_Image[cnt].Handle, TRUE);	//–â‘è‚ğ•`‰æ
+					if (Number_Image[cnt].Reverse_flg)	//”½“]ƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚é‚Æ‚«
+						DrawTurnGraph(Number_Image[cnt].X, Number_Image[cnt].Y, Number_Image[cnt].Handle, TRUE); //¶‰E”½“]•`‰æ
+					else
+						DrawGraph(Number_Image[cnt].X, Number_Image[cnt].Y, Number_Image[cnt].Handle, TRUE);	//–â‘è‚ğ•`‰æ
+
+				}
 
 				break;
 			}

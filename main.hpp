@@ -175,6 +175,8 @@ struct STRUCT_GAZOU {
 	BOOL Num_flg;			//数字用フラグ
 	BOOL Positon_flg;		//座標設定完了用フラグ
 	BOOL Reverse_flg;		//左右反転フラグ
+	BOOL IsDraw;			//描画してよいか
+	int Color;				//色
 };
 
 struct STRUCT_MOUSE {
