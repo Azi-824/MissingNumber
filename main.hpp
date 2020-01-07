@@ -380,4 +380,4 @@ VOID GET_DATEDATA();					//日付を取得する関数
 
 BOOL CHENGE_COLOR(int,int);					//描画色を変更する関数
 
-VOID DRAW_FLASHING(int);				//点滅描画
+VOID FLASHING(int);				//点滅描画

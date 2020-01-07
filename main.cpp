@@ -1216,7 +1216,7 @@ VOID DRAW_QUESTION(VOID)
 
 				if (Flashing_flg)	//“_–Åƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚ê‚Î
 				{
-					DRAW_FLASHING(cnt);		//“_–Å•`‰æ
+					FLASHING(cnt);		//“_–Å•`‰æ
 				}
 
 				if (Number_Image[cnt].IsDraw)		//•`‰æ‚µ‚Ä‚æ‚¢Žž
@@ -1247,7 +1247,7 @@ VOID DRAW_QUESTION(VOID)
 
 				if (Flashing_flg)	//“_–Åƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚ê‚Î
 				{
-					DRAW_FLASHING(cnt);		//“_–Å•`‰æ
+					FLASHING(cnt);		//“_–Å•`‰æ
 				}
 
 				if (Number_Image[cnt].IsDraw)		//•`‰æ‚µ‚Ä‚æ‚¢Žž
@@ -1266,7 +1266,7 @@ VOID DRAW_QUESTION(VOID)
 
 				if (Flashing_flg)	//“_–Åƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚ê‚Î
 				{
-					DRAW_FLASHING(cnt);		//“_–Å•`‰æ
+					FLASHING(cnt);		//“_–Å•`‰æ
 				}
 
 				if (Number_Image[cnt].IsDraw)		//•`‰æ‚µ‚Ä‚æ‚¢Žž
@@ -2061,7 +2061,7 @@ BOOL CHENGE_COLOR(int handle,int color)
 }
 
 //*********** “_–Å•`‰æ *******************
-VOID DRAW_FLASHING(int cnt)
+VOID FLASHING(int cnt)
 {
 	if (DrawTime >= 2 && (int)DrawTime % 2 == 0)		//2•b’u‚«‚É
 	{
