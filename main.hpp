@@ -102,7 +102,7 @@
 
 #define REVERSE_TYPE 1					//反転させるかどうかをフラグで使用する際につかう
 
-
+#define TOUKA_MIN	80					//透過率の最低値
 
 //########## 列挙型 ##########
 enum GAME_SCENE {
@@ -178,6 +178,7 @@ struct STRUCT_GAZOU {
 	BOOL IsDraw;			//描画してよいか
 	BOOL SetIsDraw_flg;		//描画してよいかを設定したか
 	int Color;				//色
+	int touka;				//透過率
 };
 
 struct STRUCT_MOUSE {

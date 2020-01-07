@@ -495,6 +495,7 @@ VOID MY_GAME_SET(VOID)
 		Number_Image[cnt].Positon_flg = FALSE;
 		Number_Image[cnt].IsDraw = TRUE;
 		Number_Image[cnt].SetIsDraw_flg = FALSE;
+		Number_Image[cnt].touka = 255;	//透過なし
 		Number_Image[cnt].X = 0;
 		Number_Image[cnt].Y = 0;
 	}
@@ -882,6 +883,11 @@ VOID MY_CREATE_QUESTION(VOID)
 			Number_Image[num].Reverse_flg = num2;	//反転させるかどうか
 			Number_Image[num].Color = GetRand(360);	//色設定
 			CHENGE_COLOR(Number_Image[num].Handle,Number_Image[num].Color);//色変更
+			Number_Image[cnt].touka = GetRand(255);	//透過率設定
+			if (Number_Image[cnt].touka < TOUKA_MIN)	//透過率の最低値以下だったら
+			{
+				Number_Image[cnt].touka += TOUKA_MIN;	//透過率の最低値を超えるように調整
+			}
 			Number_Image[num].IsDraw = TRUE;		//描画してよい
 			cnt++;								//cntをインクリメント
 		}
@@ -1219,6 +1225,8 @@ VOID DRAW_QUESTION(VOID)
 					FLASHING(cnt);		//点滅描画
 				}
 
+				SetDrawBlendMode(DX_BLENDMODE_ALPHA, Number_Image[cnt].touka);	//透過処理開始
+
 				if (Number_Image[cnt].IsDraw)		//描画してよい時
 				{
 					if (Number_Image[cnt].Reverse_flg)	//反転フラグが立っているとき
@@ -1230,6 +1238,8 @@ VOID DRAW_QUESTION(VOID)
 						DrawGraph(Number_Image[cnt].X, Number_Image[cnt].Y, Number_Image[cnt].Handle, TRUE);	//問題を描画
 					}
 				}
+
+				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);			//透過処理終了
 
 				break;
 
@@ -1250,6 +1260,8 @@ VOID DRAW_QUESTION(VOID)
 					FLASHING(cnt);		//点滅描画
 				}
 
+				SetDrawBlendMode(DX_BLENDMODE_ALPHA, Number_Image[cnt].touka);	//透過処理開始
+
 				if (Number_Image[cnt].IsDraw)		//描画してよい時
 				{
 					//角度を変えて描画
@@ -1260,6 +1272,8 @@ VOID DRAW_QUESTION(VOID)
 						Number_Image[cnt].Handle, TRUE);
 				}
 
+				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);			//透過処理終了
+
 			break;
 
 			case (int)GAME_LEVEL_HARD: //難易度難しいの処理
@@ -1268,6 +1282,8 @@ VOID DRAW_QUESTION(VOID)
 				{
 					FLASHING(cnt);		//点滅描画
 				}
+
+				SetDrawBlendMode(DX_BLENDMODE_ALPHA, Number_Image[cnt].touka);	//透過処理開始
 
 				if (Number_Image[cnt].IsDraw)		//描画してよい時
 				{
@@ -1279,6 +1295,8 @@ VOID DRAW_QUESTION(VOID)
 						DrawGraph(Number_Image[cnt].X, Number_Image[cnt].Y, Number_Image[cnt].Handle, TRUE);	//問題を描画
 
 				}
+
+				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);			//透過処理終了
 
 				break;
 			}
