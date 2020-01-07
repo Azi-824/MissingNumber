@@ -275,6 +275,7 @@ BOOL WaitTime_flg = FALSE;							//時間を待つためのフラグ
 BOOL First_flg = TRUE;								//最初の問題
 BOOL CountDownStart_flg = FALSE;					//カウントダウンスタートのフラグ
 BOOL Retire_flg = FALSE;							//リタイアフラグ
+BOOL Flashing_flg = FALSE;							//点滅フラグ
 
 
 //時間関連
@@ -379,3 +380,4 @@ VOID GET_DATEDATA();					//日付を取得する関数
 
 BOOL CHENGE_COLOR(int,int);					//描画色を変更する関数
 
+VOID DRAW_FLASHING(int);				//点滅描画

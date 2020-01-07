@@ -887,6 +887,7 @@ VOID MY_CREATE_QUESTION(VOID)
 		}
 		
 	}
+	Flashing_flg = GetRand(1);				//“_–Åƒtƒ‰ƒO
 	//££££££££££ –â‘è‚ğ¶¬ ££££££££££
 }
 
@@ -1211,27 +1212,11 @@ VOID DRAW_QUESTION(VOID)
 		{
 			switch (Game_Level_Now)
 			{
-			case GAME_LEVEL_EASY:	//“ïˆÕ“x‚©‚ñ‚½‚ñ‚Ìˆ—
+			case (int)GAME_LEVEL_EASY:	//“ïˆÕ“x‚©‚ñ‚½‚ñ‚Ìˆ—
 
-				if (DrawTime >= 2 &&(int)DrawTime % 2 ==0)		//2•b’u‚«‚É
+				if (Flashing_flg)	//“_–Åƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚ê‚Î
 				{
-					if (Number_Image[cnt].SetIsDraw_flg == FALSE)		//•`‰æİ’èŠ®—¹‚µ‚Ä‚È‚¢‚Æ‚«‚Í
-					{
-						if (Number_Image[cnt].IsDraw)	//•`‰æ‚µ‚Ä‚æ‚¢
-						{
-							Number_Image[cnt].IsDraw = FALSE;	//•`‰æ‚µ‚Ä‚Í‚¢‚¯‚È‚¢
-							Number_Image[cnt].SetIsDraw_flg = TRUE;	//İ’èŠ®—¹
-						}
-						else
-						{
-							Number_Image[cnt].IsDraw = TRUE;	//•`‰æ‚µ‚Ä‚æ‚¢
-							Number_Image[cnt].SetIsDraw_flg = TRUE;	//İ’èŠ®—¹
-						}
-					}
-				}
-				else
-				{
-					Number_Image[cnt].SetIsDraw_flg = FALSE;	//İ’èŠ®—¹‚µ‚Ä‚È‚¢
+					DRAW_FLASHING(cnt);		//“_–Å•`‰æ
 				}
 
 				if (Number_Image[cnt].IsDraw)		//•`‰æ‚µ‚Ä‚æ‚¢
@@ -1248,7 +1233,7 @@ VOID DRAW_QUESTION(VOID)
 
 				break;
 
-			case GAME_LEVEL_NORMAL:	//“ïˆÕ“x•’Ê‚Ìˆ—
+			case (int)GAME_LEVEL_NORMAL:	//“ïˆÕ“x•’Ê‚Ìˆ—
 
 				//‰ñ“]Šp“x‚Ìˆ—
 				if (cnt % 2 == 0)		//‹ô”‚Ì
@@ -1258,6 +1243,11 @@ VOID DRAW_QUESTION(VOID)
 				else if (cnt % 2 == 1)	//Šï”‚Ì
 				{
 					rote = -cnt + 2;		//¶‰ñ“]
+				}
+
+				if (Flashing_flg)	//“_–Åƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚ê‚Î
+				{
+					DRAW_FLASHING(cnt);		//“_–Å•`‰æ
 				}
 
 				if (Number_Image[cnt].IsDraw)		//•`‰æ‚µ‚Ä‚æ‚¢
@@ -1272,7 +1262,12 @@ VOID DRAW_QUESTION(VOID)
 
 			break;
 
-			case GAME_LEVEL_HARD: //“ïˆÕ“x“ï‚µ‚¢‚Ìˆ—
+			case (int)GAME_LEVEL_HARD: //“ïˆÕ“x“ï‚µ‚¢‚Ìˆ—
+
+				if (Flashing_flg)	//“_–Åƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚ê‚Î
+				{
+					DRAW_FLASHING(cnt);		//“_–Å•`‰æ
+				}
 
 				if (Number_Image[cnt].IsDraw)		//•`‰æ‚µ‚Ä‚æ‚¢
 				{
@@ -2062,5 +2057,33 @@ BOOL CHENGE_COLOR(int handle,int color)
 		return FALSE;
 	}
 
+
+}
+
+//*********** “_–Å•`‰æ *******************
+VOID DRAW_FLASHING(int cnt)
+{
+	if (DrawTime >= 2 && (int)DrawTime % 2 == 0)		//2•b’u‚«‚É
+	{
+		if (Number_Image[cnt].SetIsDraw_flg == FALSE)		//•`‰æİ’èŠ®—¹‚µ‚Ä‚È‚¢‚Æ‚«‚Í
+		{
+			if (Number_Image[cnt].IsDraw)	//•`‰æ‚µ‚Ä‚æ‚¢
+			{
+				Number_Image[cnt].IsDraw = FALSE;	//•`‰æ‚µ‚Ä‚Í‚¢‚¯‚È‚¢
+				Number_Image[cnt].SetIsDraw_flg = TRUE;	//İ’èŠ®—¹
+			}
+			else
+			{
+				Number_Image[cnt].IsDraw = TRUE;	//•`‰æ‚µ‚Ä‚æ‚¢
+				Number_Image[cnt].SetIsDraw_flg = TRUE;	//İ’èŠ®—¹
+			}
+		}
+	}
+	else
+	{
+		Number_Image[cnt].SetIsDraw_flg = FALSE;	//İ’èŠ®—¹‚µ‚Ä‚È‚¢
+	}
+
+	return;
 
 }
