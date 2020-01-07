@@ -82,7 +82,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	MY_MUSIC_LOAD(&SE_CLICK, MUSIC_SE_CLICK);		//クリックしたときの効果音を読み込む
 	MY_MUSIC_LOAD(&SE_KETTEI, MUSIC_SE_CLICK2);		//選択肢をクリックしたときの効果音を読み込む
 	MY_MUSIC_LOAD(&SE_COUNTDOWN, MUSIC_SE_COUNTDOWN);//カウントダウンの時の効果音を読み込む
-	MY_MUSIC_LOAD(&BGM, MUSIC_BGM);					//BGMを読み込む
+	MY_MUSIC_LOAD(&BGM_TITLE, MUSIC_BGM_TITLE);				//BGMを読み込む
+	MY_MUSIC_LOAD(&BGM_PLAY, MUSIC_BGM_PLAY);				//BGMを読み込む
+	MY_MUSIC_LOAD(&BGM_RANKING, MUSIC_BGM_RANKING);			//BGMを読み込む
 
 	//無限ループ
 	while (TRUE)
@@ -206,6 +208,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	DeleteMusicMem(SE_CLICK.Handle);	//音のハンドルを削除
 	DeleteMusicMem(SE_KETTEI.Handle);	//音のハンドルを削除
 	DeleteMusicMem(SE_COUNTDOWN.Handle);//音のハンドルを削除
+	DeleteMusicMem(BGM_TITLE.Handle);	//音のハンドルを削除
+	DeleteMusicMem(BGM_PLAY.Handle);	//音のハンドルを削除
+	DeleteMusicMem(BGM_RANKING.Handle);	//音のハンドルを削除
 	//▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ 音のハンドルの削除 ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
 
 	delete fps;				//fpsを破棄
@@ -240,9 +245,16 @@ VOID MY_ALL_KEYDOWN_UPDATE(VOID)
 //########## タイトル画面の関数 ##########
 VOID MY_GAME_TITLE(VOID)
 {
-	MY_INIT();		//初期化関数
 
-	
+	//BGMが流れていないとき
+	if (CheckSoundMem(BGM_TITLE.Handle) == 0)
+	{
+		StopSoundMem(BGM_RANKING.Handle);		//ランキング画面のBGMを止める
+		ChangeVolumeSoundMem(255 * 30 / 100, BGM_TITLE.Handle);	//BGMの音量を50％にする
+		PlaySoundMem(BGM_TITLE.Handle, DX_PLAYTYPE_LOOP);			//BGMを流す
+	}
+
+	MY_INIT();		//初期化関数
 
 	if (AllKeyState[KEY_INPUT_DELETE] != 0)	//デリートキーが押されたていた時
 	{
@@ -295,10 +307,10 @@ VOID MY_GAME_SETUMEI(VOID)
 {
 
 	//BGMが流れていないとき
-	if (CheckSoundMem(BGM.Handle) == 0)
+	if (CheckSoundMem(BGM_TITLE.Handle) == 0)
 	{
-		ChangeVolumeSoundMem(255 * 30 / 100, BGM.Handle);	//BGMの音量を50％にする
-		PlaySoundMem(BGM.Handle, DX_PLAYTYPE_LOOP);			//BGMを流す
+		ChangeVolumeSoundMem(255 * 30 / 100, BGM_TITLE.Handle);	//BGMの音量を50％にする
+		PlaySoundMem(BGM_TITLE.Handle, DX_PLAYTYPE_LOOP);			//BGMを流す
 	}
 
 	GET_MOUSE_STATE(&Setu_rect, 1);	//マウスの情報を取得
@@ -544,6 +556,15 @@ VOID MY_GAME_SET(VOID)
 //########## プレイ画面の関数 ##########
 VOID MY_GAME_PLAY(VOID)
 {
+
+	//BGMが流れていないとき
+	if (CheckSoundMem(BGM_PLAY.Handle) == 0)
+	{
+		StopSoundMem(BGM_TITLE.Handle);		//タイトル画面のBGMを止める
+		ChangeVolumeSoundMem(255 * 30 / 100, BGM_PLAY.Handle);	//BGMの音量を50％にする
+		PlaySoundMem(BGM_PLAY.Handle, DX_PLAYTYPE_LOOP);			//BGMを流す
+	}
+
 	DRAW_BACKIMAGE(&Back_Image[BackImageNow]);	//背景の描画
 
 	DRAW_ANSER_NUM();		//回答用の選択肢を描画
@@ -630,6 +651,15 @@ VOID MY_GAME_PLAY(VOID)
 //########## リザルト画面の関数 #########
 VOID MY_GAME_RESULT(VOID)
 {
+
+	//BGMが流れていないとき
+	if (CheckSoundMem(BGM_RANKING.Handle) == 0)
+	{
+		StopSoundMem(BGM_PLAY.Handle);		//プレイ画面のBGMを止める
+		ChangeVolumeSoundMem(255 * 30 / 100, BGM_RANKING.Handle);	//BGMの音量を50％にする
+		PlaySoundMem(BGM_RANKING.Handle, DX_PLAYTYPE_LOOP);			//BGMを流す
+	}
+
 	BackImageNow = BACKIMAGE_RESULT;	//背景画像の種類をリザルト画面に変更
 
 	DRAW_BACKIMAGE(&Back_Image[BackImageNow]);	//背景の描画

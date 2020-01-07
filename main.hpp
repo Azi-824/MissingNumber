@@ -65,7 +65,9 @@
 #define MUSIC_SE_CLICK2	"SE\\kettei.mp3"			//選択肢をクリックしたときの効果音
 #define MUSIC_SE_COUNTDOWN	"SE\\countdown.mp3"		//カウントダウンの効果音
 
-#define MUSIC_BGM		"BGM\\cyber42.mp3"			//BGM
+#define MUSIC_BGM_TITLE		"BGM\\cyber44.mp3"		//BGM-title
+#define MUSIC_BGM_PLAY		"BGM\\cyber31.mp3"		//BGM-play
+#define MUSIC_BGM_RANKING	"BGM\\healing13.mp3"	//BGM-ranking
 
 #define SAVE_DATA		"C:\\Missing Numbers_SAVE\\Save.dat"		//セーブデータ
 #define GAME_DATA		"C:\\Missing Numbers_SAVE"					//セーブデータを入れるフォルダのパス
@@ -298,7 +300,9 @@ MUSIC SE_FALSE;			//不正解した時に鳴る音
 MUSIC SE_CLICK;			//クリックしたときの効果音
 MUSIC SE_KETTEI;		//選択肢をクリックしたときの効果音
 MUSIC SE_COUNTDOWN;		//カウントダウンの時の効果音
-MUSIC BGM;				//BGM
+MUSIC BGM_TITLE;		//BGM-title
+MUSIC BGM_PLAY;			//BGM-play
+MUSIC BGM_RANKING;		//BGM-ranking
 
 //セーブデータ関連
 SAVE SaveData[128] = { 0 };		//セーブデータを入れる配列
