@@ -148,8 +148,8 @@ enum BACKIMAGE_SCENE {
 };
 
 enum SETUMEI {
-	BACKIMAGE_SETULEVEL,//説明画面のレベル説明
 	BACKIMAGE_SETUPLAY,	//説明画面のプレイ説明
+	BACKIMAGE_SETULEVEL	//説明画面のレベル説明
 };
 
 enum MOVE_DIRECTION {
