@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MissingNumber", "MissingNumber.vcxproj", "{AA01C5FE-C77F-4BAE-82FE-7B830CD22E56}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{39FB84B2-C85E-4B79-82F1-1D4BBFAEA736}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,10 @@ Global
 		{AA01C5FE-C77F-4BAE-82FE-7B830CD22E56}.Release|x64.Build.0 = Release|x64
 		{AA01C5FE-C77F-4BAE-82FE-7B830CD22E56}.Release|x86.ActiveCfg = Release|Win32
 		{AA01C5FE-C77F-4BAE-82FE-7B830CD22E56}.Release|x86.Build.0 = Release|Win32
+		{39FB84B2-C85E-4B79-82F1-1D4BBFAEA736}.Debug|x64.ActiveCfg = Debug
+		{39FB84B2-C85E-4B79-82F1-1D4BBFAEA736}.Debug|x86.ActiveCfg = Debug
+		{39FB84B2-C85E-4B79-82F1-1D4BBFAEA736}.Release|x64.ActiveCfg = Release
+		{39FB84B2-C85E-4B79-82F1-1D4BBFAEA736}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
