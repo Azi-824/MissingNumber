@@ -249,7 +249,14 @@ VOID MY_GAME_TITLE(VOID)
 	//BGMが流れていないとき
 	if (CheckSoundMem(BGM_TITLE.Handle) == 0)
 	{
-		StopSoundMem(BGM_RANKING.Handle);		//ランキング画面のBGMを止める
+		if (CheckSoundMem(BGM_RANKING.Handle) == 1)
+		{
+			StopSoundMem(BGM_RANKING.Handle);		//ランキング画面のBGMを止める
+		}
+		else if (CheckSoundMem(BGM_PLAY.Handle) == 1)
+		{
+			StopSoundMem(BGM_PLAY.Handle);		//プレイ画面のBGMを止める
+		}
 		ChangeVolumeSoundMem(255 * 30 / 100, BGM_TITLE.Handle);	//BGMの音量を50％にする
 		PlaySoundMem(BGM_TITLE.Handle, DX_PLAYTYPE_LOOP);			//BGMを流す
 	}
@@ -264,9 +271,9 @@ VOID MY_GAME_TITLE(VOID)
 
 	DRAW_BACKIMAGE(&Back_Image[BackImageNow]);	//背景の描画
 
-	GET_MOUSE_STATE(&Start_rect[0], START_KIND);	//マウスの情報を取得
-
 	SET_START_IMAGE();		//スタートの選択肢の設定
+
+	GET_MOUSE_STATE(&Start_rect[0], START_KIND);	//マウスの情報を取得
 
 	DRAW_START();			//スタートの選択肢の描画
 
@@ -392,7 +399,7 @@ VOID MY_GAME_CHECK(VOID)
 		DeleteFontToHandle(Font);	//フォントハンドル削除
 
 	}
-	else if (End_flg == TRUE || Retire_flg == TRUE)
+	else if (End_flg == TRUE)
 	{
 		int Font = CREATE_FONT(64);	//フォントハンドル作成
 		char Str_Time[128] = { 0 };
@@ -427,6 +434,25 @@ VOID MY_GAME_CHECK(VOID)
 
 		DeleteFontToHandle(Font);	//フォントハンドル削除
 	}
+	else if (Retire_flg == TRUE)
+	{
+		int Font = CREATE_FONT(64);	//フォントハンドル作成
+		char Str_Time[128] = { 0 };
+
+		sprintf(&Str_Time[0], "タイトルに戻りますか？");
+
+		int StrWidth = GetDrawFormatStringWidthToHandle(Font, &Str_Time[0]);	//デフォルトのフォントの横幅を取得
+
+		DrawStringToHandle(GAME_WIDTH / 2 - StrWidth / 2,
+			150,
+			&Str_Time[0],
+			GetColor(255, 255, 255),
+			Font);	//確認文字の描画
+
+		DeleteFontToHandle(Font);	//フォントハンドル削除
+
+
+	}
 
 	//領域内でクリックされた時
 	if (Mouse_Date.Mouse_hover_flg == TRUE &&
@@ -458,12 +484,12 @@ VOID MY_GAME_CHECK(VOID)
 
 		}
 		//▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ データ削除処理 ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
-		else if (Setumei_flg == TRUE)	//説明フラグが立っていたら
+		else if (Setumei_flg == TRUE || Retire_flg == TRUE)	//説明フラグが立っていたら
 		{
 			Yes_flg = FALSE;
 			GameSceneNow = (int)GAME_SCENE_TITLE;//ゲームシーンをタイトル画面に変える
 		}
-		else
+		else if(End_flg==TRUE)
 		{
 			GameEnd_flg = TRUE;	//ゲーム終了フラグを立てる
 			Yes_flg = FALSE;
@@ -486,7 +512,7 @@ VOID MY_GAME_CHECK(VOID)
 		 StartTime += LostTime;					//中断していた時間をプラスする
 		 No_flg = FALSE;
 	 }
-	 else
+	 else if(End_flg == TRUE)
 	 {
 		 GameSceneNow = (int)GAME_SCENE_TITLE;//ゲームシーンをタイトル画面に変える
 		 No_flg = FALSE;
@@ -974,6 +1000,7 @@ BOOL MY_INIT(VOID)
 	Setumei_flg = FALSE;
 	First_flg = TRUE;
 	CountDownStart_flg = FALSE;
+	Retire_flg = FALSE;
 
 	return TRUE;
 }
