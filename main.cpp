@@ -969,6 +969,11 @@ BOOL MY_INIT(VOID)
 		Number_Image[cnt].Y = 0;
 	}
 
+	for (int i = 0; i < START_KIND; ++i)
+	{
+		GetGraphSize(Start_Image[i].Handle, &Start_Image[i].Width, &Start_Image[i].Height);	//スタートの選択肢のサイズ再取得
+	}
+
 	RESET_MOUSE_DATE();		//マウス情報をリセット
 
 	Q_Sum = 0;		//問題数を初期化
